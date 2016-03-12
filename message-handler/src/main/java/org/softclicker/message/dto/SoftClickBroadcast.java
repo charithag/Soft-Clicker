@@ -1,11 +1,9 @@
-package com.softclicker.message.dto;
+package org.softclicker.message.dto;
 
 import java.net.InetAddress;
 
-/**
- * Created by charitha on 3/6/16.
- */
-public class SCBroadcast {
+public class SoftClickBroadcast {
+
     private InetAddress serverIP;
     private int port;
     private String serverName;

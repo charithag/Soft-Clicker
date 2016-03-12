@@ -1,9 +1,6 @@
-package com.softclicker.message.dto;
+package org.softclicker.message.dto;
 
-/**
- * Created by charitha on 3/6/16.
- */
-public class SCAnswer {
+public class SoftClickAnswer {
 
     private String studentId;
     private AnswerOption answerOption;
