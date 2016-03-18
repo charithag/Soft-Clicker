@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Soft-Clicker \u00A9 2016</string>
+    <string name="student_name_label">Select student</string>
+    <string name="student_connect_label">Connect</string>
+    <string-array name="student_list">
+        <item>Student 01</item>
+        <item>Student 02</item>
+        <item>Student 03</item>
+    </string-array>
+</resources>
