@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyActivity extends Activity {
@@ -43,9 +44,15 @@ public class MyActivity extends Activity {
         registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         List<ScanResult> wifiScanList = mainWifiObj.getScanResults();
 
-        ListView apnList = (ListView) findViewById(R.id.apnListView);
-        ArrayAdapter<ScanResult> apnAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, wifiScanList);
-        apnList.setAdapter(apnAdapter);
+        ArrayList<ApnData> apnArray = new ArrayList<>();
+        for (int i = 0; i < wifiScanList.size(); i++) {
+            apnArray.add(new ApnData(wifiScanList.get(i).SSID, wifiScanList.get(i).BSSID));
+        }
+
+        ApnAdapter apnAdapter = new ApnAdapter(this, apnArray);
+        ListView listView = (ListView) findViewById(R.id.apnListView);
+        listView.setAdapter(apnAdapter);
+
     }
 
     public void navigateToListner(View view) {
