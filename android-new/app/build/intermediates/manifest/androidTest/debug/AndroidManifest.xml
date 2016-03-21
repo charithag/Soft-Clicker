@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.softclicker.android.test">
+    package="org.softclicker.android.soft_clicker.test">
 
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
+    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="23" />
 
     <application>
         <uses-library android:name="android.test.runner" />
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="org.softclicker.android"
+                     android:targetPackage="org.softclicker.android.soft_clicker"
                      android:handleProfiling="false"
                      android:functionalTest="false"
-                     android:label="Tests for org.softclicker.android"/>
+                     android:label="Tests for org.softclicker.android.soft_clicker"/>
 </manifest>
