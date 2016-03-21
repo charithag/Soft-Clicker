@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\layout\\main.xml",
+        "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\src\\main\\res\\layout\\main.xml"
+    },
+    {
+        "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_listner.xml",
+        "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\src\\main\\res\\layout\\activity_listner.xml"
+    },
+    {
+        "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\layout\\item_apn.xml",
+        "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\src\\main\\res\\layout\\item_apn.xml"
+    }
+]

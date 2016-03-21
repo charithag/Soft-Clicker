@@ -1,0 +1,70 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .idea\
+* .idea\.name
+* .idea\compiler.xml
+* .idea\copyright\
+* .idea\copyright\profiles_settings.xml
+* .idea\encodings.xml
+* .idea\misc.xml
+* .idea\modules.xml
+* .idea\uiDesigner.xml
+* .idea\vcs.xml
+* .idea\workspace.xml
+* android.iml
+* ant.properties
+* build.xml
+* out\
+* out\production\
+* out\production\android\
+* out\production\android\android.apk
+* out\production\android\android.unaligned.apk
+* out\production\android\org\
+* out\production\android\org\softclicker\
+* out\production\android\org\softclicker\android\
+* out\production\android\org\softclicker\android\ApnAdapter.class
+* out\production\android\org\softclicker\android\ApnData.class
+* out\production\android\org\softclicker\android\BuildConfig.class
+* out\production\android\org\softclicker\android\ListnerActivity.class
+* out\production\android\org\softclicker\android\MyActivity.class
+* out\production\android\org\softclicker\android\R$array.class
+* out\production\android\org\softclicker\android\R$attr.class
+* out\production\android\org\softclicker\android\R$drawable.class
+* out\production\android\org\softclicker\android\R$id.class
+* out\production\android\org\softclicker\android\R$layout.class
+* out\production\android\org\softclicker\android\R$string.class
+* out\production\android\org\softclicker\android\R.class
+* out\production\android\org\softclicker\android\WifiScanReceiver.class
+* proguard-project.txt
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app\src\main\AndroidManifest.xml
+* assets\ => app\src\main\assets
+* res\ => app\src\main\res\
+* src\ => app\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
