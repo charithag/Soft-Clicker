@@ -59,7 +59,7 @@ ADDED from C:\Charith\Work\soft-clicker-core\android-new\app\src\main\AndroidMan
 	android:name
 		ADDED from C:\Charith\Work\soft-clicker-core\android-new\app\src\main\AndroidManifest.xml:21:19-50
 receiver#org.softclicker.android.soft_clicker.MyWifiReceiver
-ADDED from C:\Charith\Work\soft-clicker-core\android-new\app\src\main\AndroidManifest.xml:23:9-26:49
+ADDED from C:\Charith\Work\soft-clicker-core\android-new\app\src\main\AndroidManifest.xml:23:9-26:39
 	android:enabled
 		ADDED from C:\Charith\Work\soft-clicker-core\android-new\app\src\main\AndroidManifest.xml:25:13-36
 	android:exported

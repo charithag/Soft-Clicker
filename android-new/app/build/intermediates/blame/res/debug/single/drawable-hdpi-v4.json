@@ -84,12 +84,12 @@
         "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\drawable-hdpi-v4\\abc_ic_search_api_mtrl_alpha.png"
     },
     {
-        "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\abc_list_pressed_holo_light.9.png",
-        "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\drawable-hdpi-v4\\abc_list_pressed_holo_light.9.png"
-    },
-    {
         "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\ic_refresh_white_24dp.png",
         "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\src\\main\\res\\drawable-hdpi\\ic_refresh_white_24dp.png"
+    },
+    {
+        "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\abc_list_pressed_holo_light.9.png",
+        "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\drawable-hdpi-v4\\abc_list_pressed_holo_light.9.png"
     },
     {
         "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\abc_ic_ab_back_mtrl_am_alpha.png",
@@ -106,6 +106,10 @@
     {
         "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\abc_spinner_mtrl_am_alpha.9.png",
         "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\drawable-hdpi-v4\\abc_spinner_mtrl_am_alpha.9.png"
+    },
+    {
+        "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\ic_sync_white_24dp.png",
+        "source": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\src\\main\\res\\drawable-hdpi\\ic_sync_white_24dp.png"
     },
     {
         "merged": "C:\\Charith\\Work\\soft-clicker-core\\android-new\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\abc_ic_go_search_api_mtrl_alpha.png",

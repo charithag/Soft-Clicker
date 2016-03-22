@@ -23,7 +23,7 @@
         <receiver
             android:name=".MyWifiReceiver"
             android:enabled="false"
-            android:exported="false"></receiver>
+            android:exported="false"/>
     </application>
 
 </manifest>
