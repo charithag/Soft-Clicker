@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -49,7 +50,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final ScanResult selectedSSID = wifiScanList.get(position);
-                final String[] apnPw = {""};
+                boolean isSec = false;
+
+                if (selectedSSID.capabilities.contains("WPA2")) {
+                    //do something
+                    isSec = true;
+                } else if (selectedSSID.capabilities.contains("WPA")) {
+                    //do something
+                    isSec = true;
+                } else if (selectedSSID.capabilities.contains("WEP")) {
+                    //do something
+                    isSec = true;
+                }
 
                 LayoutInflater li = LayoutInflater.from(MainActivity.this);
                 View promptsView = li.inflate(R.layout.prompt_apn_pw, null);
@@ -65,16 +77,8 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        // result.setText(userInput.getText());
-                                        apnPw[0] = userInput.getText().toString();
                                         // TODO connect with APN
-
-                                        // after connection is successful
-                                        // WifiInfo connectionInfo = mainWifiObj.getConnectionInfo();
-                                        Intent i = new Intent(MainActivity.this, ListnerActivity.class);
-                                        i.putExtra(ListnerActivity.SSID, selectedSSID.SSID);
-
-                                        startActivity(i);
+                                        ConnectToApn(selectedSSID, userInput.getText().toString());
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -85,7 +89,11 @@ public class MainActivity extends AppCompatActivity {
                                 });
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                if (isSec) {
+                    alertDialog.show();
+                } else {
+                    ConnectToApn(selectedSSID, null);
+                }
             }
         });
 
@@ -108,6 +116,29 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         registerReceiver(broadcastReceiver, intentFilter);
         mainWifiObj.startScan();
+    }
+
+    private void ConnectToApn(ScanResult apn, String p) {
+        // after connection is successful
+
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = String.format("\"%s\"", apn.SSID);
+
+        if (p != null) {
+            wifiConfig.preSharedKey = String.format("\"%s\"", p);
+        }
+
+        //remember id
+        int netId = mainWifiObj.addNetwork(wifiConfig);
+        mainWifiObj.disconnect();
+        mainWifiObj.enableNetwork(netId, true);
+        mainWifiObj.reconnect();
+
+        // WifiInfo connectionInfo = mainWifiObj.getConnectionInfo();
+        Intent i = new Intent(MainActivity.this, ListnerActivity.class);
+        i.putExtra(ListnerActivity.SSID, apn.SSID);
+
+        startActivity(i);
     }
 
     @Override
