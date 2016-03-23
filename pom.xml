@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>message-handler</module>
+        <module>android-app</module>
     </modules>
 
 </project>
