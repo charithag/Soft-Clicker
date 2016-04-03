@@ -26,7 +26,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>./gradlew</executable>
+                            <executable>./gradlew${script.extension}</executable>
                             <arguments>
                                 <argument>assembleRelease</argument>
                             </arguments>
