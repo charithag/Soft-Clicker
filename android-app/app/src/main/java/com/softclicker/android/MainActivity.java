@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAssociating = false;
 
     private ProgressDialog progressDialog;
-    private FrameLayout progressRingFrame;
     private TextView statusLabel;
     private ListView listView;
     private AlertDialog apSelectDialog;
@@ -66,7 +64,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (!isAssociating) {
-                    if (!apSelectDialog.isShowing()){
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                    if (!apSelectDialog.isShowing()) {
                         apSelectDialog.show();
                     }
                     ArrayList<ApnData> apnArray = new ArrayList<>();
@@ -75,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     ApnAdapter apnAdapter = new ApnAdapter(getBaseContext(), apnArray);
                     listView.setAdapter(apnAdapter);
-                    progressRingFrame.setVisibility(View.GONE);
-                    listView.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -117,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         apListBuilder.setView(promptsView);
         apSelectDialog = apListBuilder.create();
 
-        progressRingFrame = (FrameLayout) promptsView.findViewById(R.id.progressRingFrame);
         listView = (ListView) promptsView.findViewById(R.id.apnListView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -131,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
                 LayoutInflater li = LayoutInflater.from(MainActivity.this);
                 @SuppressLint("InflateParams")
-                View promptsView = li.inflate(R.layout.prompt_apn_pw, null);
+                View promptsView = li.inflate(R.layout.apn_password, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         MainActivity.this);
@@ -197,14 +195,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.refresh_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.refresh_menu:
+            case R.id.menu_connect_wifi:
                 SharedPreferences.Editor prefEditor = sharedPref.edit();
                 prefEditor.remove(Constants.SSID);
                 prefEditor.remove(Constants.PASSWORD);
@@ -218,9 +216,29 @@ public class MainActivity extends AppCompatActivity {
                 wifiManager.startScan();
                 apSelectDialog.show();
                 return true;
+            case R.id.menu_select_user:
+                selectUser();
             default:
                 return false;
         }
+    }
+
+    private void selectUser() {
+        LayoutInflater studentListLayoutInflater = LayoutInflater.from(MainActivity.this);
+        @SuppressLint("InflateParams")
+        View promptsView = studentListLayoutInflater.inflate(R.layout.select_user, null);
+        AlertDialog.Builder studentSelectBuilder = new AlertDialog.Builder(MainActivity.this);
+        studentSelectBuilder.setView(promptsView);
+        AlertDialog studentSelectDialog = studentSelectBuilder.create();
+
+        ListView studentListView = (ListView) promptsView.findViewById(R.id.studentListView);
+        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
+
+        studentSelectDialog.show();
     }
 
     private void connectWithAP(String ssid, String password) {
@@ -229,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (IllegalArgumentException ignored) {
         }
         isAssociating = true;
-        if (apSelectDialog != null && apSelectDialog.isShowing()){
+        if (apSelectDialog != null && apSelectDialog.isShowing()) {
             apSelectDialog.dismiss();
         }
-        if (progressDialog != null && progressDialog.isShowing()){
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
         progressDialog = ProgressDialog.show(this, "Connecting",

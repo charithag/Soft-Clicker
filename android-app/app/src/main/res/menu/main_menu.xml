@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_select_user"
+        android:icon="@drawable/ic_people_white_24dp"
+        android:title="@string/change_user"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_connect_wifi"
+        android:icon="@drawable/ic_network_wifi_white_24dp"
+        android:title="@string/connect_wifi"
+        app:showAsAction="ifRoom" />
+</menu>
