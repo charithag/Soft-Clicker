@@ -2,12 +2,7 @@
     <string name="app_name">Soft-Clicker</string>
     <string name="student_name_label">Welcome</string>
     <string name="student_connect_label">Connect</string>
-    <string name="main_label_2">Select your class</string>
-    <string-array name="student_list">
-        <item>Student 01</item>
-        <item>Student 02</item>
-        <item>Student 03</item>
-    </string-array>
+    <string name="main_label_2">Select Access Point to Associate with</string>
     <!--<string name="selected_class">Your are connected to</string>-->
     <string name="prompt_label">Enter APN password</string>
 </resources>
