@@ -2,6 +2,7 @@ package org.softclicker.server.dao;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.softclicker.server.entity.Answer;
 import org.softclicker.server.entity.Question;
 import org.softclicker.server.entity.User;
 
@@ -38,7 +39,7 @@ public final class DAOUtil {
     }
 
     public static Question loadQuestion(ResultSet rs, User owner, String columnPrefix) throws SQLException {
-        int questionId =  rs.getInt(columnPrefix + "QUESTION_ID");
+        int questionId = rs.getInt(columnPrefix + "QUESTION_ID");
         String question = rs.getString(columnPrefix + "QUESTION");
         String answer = rs.getString(columnPrefix + "ANSWER");
         Date createdTime = rs.getTimestamp(columnPrefix + "CREATED_TIME");
@@ -50,4 +51,15 @@ public final class DAOUtil {
         return loadQuestion(rs, owner, "");
     }
 
+    public static Answer loadAnswer(ResultSet rs, Question question, User owner, String columnPrefix)
+            throws SQLException {
+        int answerId = rs.getInt(columnPrefix + "ANSWER_ID");
+        String answer = rs.getString(columnPrefix + "ANSWER");
+        Date answeredTime = rs.getTimestamp(columnPrefix + "ANSWERED_TIME");
+        return new Answer(answerId, answer, question, owner, answeredTime);
+    }
+
+    public static Answer loadAnswer(ResultSet rs, Question question, User owner) throws SQLException {
+        return loadAnswer(rs, question, owner, "");
+    }
 }
