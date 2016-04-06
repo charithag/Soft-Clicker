@@ -16,20 +16,18 @@ public class QuestionManager {
     private static final Logger log = LogManager.getLogger(QuestionManager.class);
     private final ScopingDataSource scopingDataSource;
     private final QuestionDAO questionDAO;
-    private final UserDAO userDAO;
 
     public QuestionManager(ScopingDataSource scopingDataSource) {
         this.scopingDataSource = scopingDataSource;
         this.questionDAO = new QuestionDAO(scopingDataSource);
-        this.userDAO = new UserDAO(scopingDataSource);
     }
 
     public List<Question> getAllQuestions() {
         try {
             scopingDataSource.beginConnectionScope();
-            return questionDAO.getAllQuestions(userDAO);
+            return questionDAO.getAllQuestions();
         } catch (SQLException e) {
-            log.error("Error while retrieving users list", e);
+            log.error("Error while retrieving questions list", e);
             return new ArrayList<>();
         } finally {
             scopingDataSource.endConnectionScope();

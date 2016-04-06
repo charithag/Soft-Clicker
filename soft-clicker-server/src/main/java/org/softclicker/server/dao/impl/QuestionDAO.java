@@ -28,7 +28,7 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
         return 0;
     }
 
-    public List<Question> getAllQuestions(UserDAO userDAO) throws SQLException{
+    public List<Question> getAllQuestions() throws SQLException{
         String sql = "SELECT * FROM `QUESTION` as q,`USER` as u WHERE q.OWNER_ID=u.USER_ID";
         List<Question> questions = new ArrayList<>();
         try (
