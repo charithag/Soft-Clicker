@@ -6,7 +6,6 @@ import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.dao.impl.QuestionDAO;
 import org.softclicker.server.dao.impl.UserDAO;
 import org.softclicker.server.entity.Question;
-import org.softclicker.server.entity.User;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,6 +31,18 @@ public class QuestionManager {
         } catch (SQLException e) {
             log.error("Error while retrieving users list", e);
             return new ArrayList<>();
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
+
+    public Question getQuestionById(int questionId) {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return questionDAO.getQuestionById(questionId);
+        } catch (SQLException e) {
+            log.error("Error occurred while retrieving question with question id: `" + questionId + "`", e);
+            return null;
         } finally {
             scopingDataSource.endConnectionScope();
         }

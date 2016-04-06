@@ -32,4 +32,16 @@ public class UserManager {
             scopingDataSource.endConnectionScope();
         }
     }
+
+    public User getUserById(int userId) {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return userDAO.getUserById(userId);
+        } catch (SQLException e) {
+            log.error("Error occurred while retrieving user with user id: `" + userId + "`", e);
+            return null;
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
 }

@@ -28,7 +28,7 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
         return 0;
     }
 
-    public List<Question> getAllQuestions(UserDAO userDAO) {
+    public List<Question> getAllQuestions(UserDAO userDAO) throws SQLException{
         String sql = "SELECT * FROM `QUESTION` as q,`USER` as u WHERE q.OWNER_ID=u.USER_ID";
         List<Question> questions = new ArrayList<>();
         try (
@@ -42,13 +42,10 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
                 questions.add(question);
             }
             return questions;
-        } catch (SQLException e) {
-            log.error("Error occurred while retrieving Questions", e);
-            return null;
         }
     }
 
-    public Question getQuestionById(int questionId) {
+    public Question getQuestionById(int questionId) throws SQLException{
         String sql = "SELECT * FROM `QUESTION` as q,`USER` as u WHERE q.OWNER_ID=u.USER_ID AND QUESTION_ID=?";
         try (
                 Connection conn = scopingDataSource.getConnection();
@@ -59,9 +56,6 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
                 User owner = DAOUtil.loadUser(rs);
                 return DAOUtil.loadQuestion(rs, owner);
             }
-        } catch (SQLException e) {
-            log.error("Error occurred while retrieving Question with question id: `" + questionId + "`", e);
-            return null;
         }
     }
 }

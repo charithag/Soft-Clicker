@@ -27,7 +27,7 @@ public class UserDAO extends AbstractGenericDAO<User> {
         return 0;
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException{
         String sql = "SELECT * FROM `USER`";
         List<User> users = new ArrayList<>();
         try (
@@ -40,13 +40,10 @@ public class UserDAO extends AbstractGenericDAO<User> {
                 users.add(user);
             }
             return users;
-        } catch (SQLException e) {
-            log.error("Error occurred while retrieving users", e);
-            return null;
         }
     }
 
-    public User getUserById(int userId) {
+    public User getUserById(int userId) throws SQLException{
         String sql = "SELECT * FROM `USER` WHERE USER_ID=?";
         try (
                 Connection conn = scopingDataSource.getConnection();
@@ -56,9 +53,6 @@ public class UserDAO extends AbstractGenericDAO<User> {
             try (ResultSet rs = stmt.executeQuery()) {
                 return DAOUtil.loadUser(rs);
             }
-        } catch (SQLException e) {
-            log.error("Error occurred while retrieving user with user id: `" + userId + "`", e);
-            return null;
         }
     }
 }
