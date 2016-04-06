@@ -6,6 +6,7 @@ import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.entity.User;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class UserDAO extends AbstractGenericDAO<User> {
 
-    private final static String TABLE_NAME = "USERS";
+    private final static String TABLE_NAME = "USER";
     private final static Logger log = Logger.getLogger(UserDAO.class);
 
     public UserDAO(ScopingDataSource scopingDataSource) {
@@ -41,6 +42,22 @@ public class UserDAO extends AbstractGenericDAO<User> {
             return users;
         } catch (SQLException e) {
             log.error("Error occurred while retrieving users", e);
+            return null;
+        }
+    }
+
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM `USER` WHERE USER_ID=?";
+        try (
+                Connection conn = scopingDataSource.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+        ) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return DAOUtil.loadUser(rs);
+            }
+        } catch (SQLException e) {
+            log.error("Error occurred while retrieving user with user id: `" + userId + "`", e);
             return null;
         }
     }

@@ -1,0 +1,39 @@
+package org.softclicker.server.manage;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.softclicker.server.dao.ScopingDataSource;
+import org.softclicker.server.dao.impl.QuestionDAO;
+import org.softclicker.server.dao.impl.UserDAO;
+import org.softclicker.server.entity.Question;
+import org.softclicker.server.entity.User;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class QuestionManager {
+
+    private static final Logger log = LogManager.getLogger(QuestionManager.class);
+    private final ScopingDataSource scopingDataSource;
+    private final QuestionDAO questionDAO;
+    private final UserDAO userDAO;
+
+    public QuestionManager(ScopingDataSource scopingDataSource) {
+        this.scopingDataSource = scopingDataSource;
+        this.questionDAO = new QuestionDAO(scopingDataSource);
+        this.userDAO = new UserDAO(scopingDataSource);
+    }
+
+    public List<Question> getAllQuestions() {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return questionDAO.getAllQuestions(userDAO);
+        } catch (SQLException e) {
+            log.error("Error while retrieving users list", e);
+            return new ArrayList<>();
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
+}
