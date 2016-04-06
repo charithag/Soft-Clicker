@@ -263,7 +263,7 @@ do
     -classpath "$SOFTCLICKER_CLASSPATH" \
     -Djava.endorsed.dirs="$JAVA_ENDORSED_DIRS" \
     -Djava.io.tmpdir="$SOFTCLICKER_HOME/tmp" \
-    -Dlog4j.configuration="$SOFTCLICKER_HOME/conf" \
+    -Dlog4j.configuration="file:$SOFTCLICKER_HOME/conf/log4j.properties" \
     -Djava.command="$JAVACMD" \
     -Dsoftclicker.home="$SOFTCLICKER_HOME" \
     -Ddisplay.agent.home="$SOFTCLICKER_HOME" \
