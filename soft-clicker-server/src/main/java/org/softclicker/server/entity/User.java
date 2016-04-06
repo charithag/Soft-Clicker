@@ -57,6 +57,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "Name:" + getFullName() + "\tUser Name:" + getUserName() + "\tRoles:" + getRoles().toString();
+        return "User ID:" + userId + "\tName:" + getFullName() + "\tUser Name:" + userName + "\tRoles:" + roles.toString();
     }
 }

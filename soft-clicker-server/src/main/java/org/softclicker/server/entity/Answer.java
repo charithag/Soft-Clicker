@@ -7,6 +7,7 @@ import java.util.Date;
  * You can create new {@link Answer} only by passing a parameters through the constructor.
  */
 public class Answer {
+
     final private int answerId;
     final private String answer;
     final private Question question;
@@ -43,7 +44,7 @@ public class Answer {
 
     @Override
     public String toString() {
-        return "Answer ID: " + getAnswerId() + "\tAnswer: " + getAnswer() + "\tCreated By: " + getOwner()
-                .getUserName() + "\tCreated On: " + getAnsweredTime().toString();
+        return "Answer ID: " + answerId + "\tAnswer: " + answer + "\tCreated By: " + owner.getUserName()
+                + "\tCreated On: " + answeredTime.toString();
     }
 }

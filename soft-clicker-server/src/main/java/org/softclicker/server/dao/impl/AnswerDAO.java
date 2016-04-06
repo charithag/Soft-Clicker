@@ -30,7 +30,7 @@ public class AnswerDAO extends AbstractGenericDAO<Question> {
     }
 
     public List<Answer> getAllAnswers() throws SQLException {
-        String sql = "SELECT * FROM `QUESTION` as q,`ANSWER` as a WHERE q.QUESTION_ID=a.QUESTION_ID";
+        String sql = "SELECT * FROM `QUESTION` as q,`ANSWER` as a ,`USER` as u WHERE a.OWNER_ID=u.USER_ID AND q.QUESTION_ID=a.QUESTION_ID";
         List<Answer> answers = new ArrayList<>();
         try (
                 Connection conn = scopingDataSource.getConnection();
@@ -49,7 +49,7 @@ public class AnswerDAO extends AbstractGenericDAO<Question> {
 
     public Answer getAnswerById(int answerId) throws SQLException {
         String sql
-                = "SELECT * FROM `QUESTION` as q,`ANSWER` as a WHERE q.QUESTION_ID=a.QUESTION_ID AND ANSWER_ID=?";
+                = "SELECT * FROM `QUESTION` as q,`ANSWER` as a,`USER` as u WHERE a.OWNER_ID=u.USER_ID AND q.QUESTION_ID=a.QUESTION_ID AND ANSWER_ID=?";
         try (
                 Connection conn = scopingDataSource.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);
@@ -65,7 +65,7 @@ public class AnswerDAO extends AbstractGenericDAO<Question> {
 
     public List<Answer> getAnswersByQuestionId(int questionId) throws SQLException {
         String sql
-                = "SELECT * FROM `QUESTION` as q,`ANSWER` as a WHERE q.QUESTION_ID=a.QUESTION_ID AND QUESTION_ID=?";
+                = "SELECT * FROM `QUESTION` as q,`ANSWER` as a ,`USER` as u WHERE a.OWNER_ID=u.USER_ID AND q.QUESTION_ID=a.QUESTION_ID AND QUESTION_ID=?";
         List<Answer> answers = new ArrayList<>();
         try (
                 Connection conn = scopingDataSource.getConnection();
