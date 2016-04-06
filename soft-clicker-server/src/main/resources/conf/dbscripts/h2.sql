@@ -36,10 +36,77 @@ CREATE TABLE IF NOT EXISTS `ANSWER` (
   PRIMARY KEY (`ANSWER_ID`)
 );
 
-INSERT INTO `USER` (`FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `PASSWORD`, `ROLES`) VALUES (
-  'admin',
-  'admin',
-  'admin',
-  'admin',
-  'ADMIN'
-);
+INSERT INTO `USER` (`USER_ID`, `FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `PASSWORD`, `ROLES`) VALUES
+  (
+    1,
+    'SoftClicker',
+    'Administrator',
+    'admin',
+    'admin',
+    'ADMIN'
+  ),
+  (
+    2,
+    'Michael',
+    'Jones',
+    'jones',
+    'jones123',
+    'TEACHER'
+  ),
+  (
+    3,
+    'Craig',
+    'Coleman',
+    'craig',
+    'craig123',
+    'TEACHER'
+  ), (
+    4,
+    'Eric',
+    'Hill',
+    'eric',
+    'eric123',
+    'STUDENT'
+  ), (
+    5,
+    'Walter',
+    'Phillips',
+    'walter',
+    'walter123',
+    'STUDENT'
+  );
+
+INSERT INTO `QUESTION` (`QUESTION_ID`, `QUESTION`, `CORRECT_ANSWER`, `OWNER_ID`, `CREATED_TIME`, `EXPIRE_TIME`)
+VALUES
+  (
+    1,
+    'What is 20+20?',
+    '40',
+    2,
+    '2016-04-06 18:00:10',
+    '2016-04-06 18:10:00'
+  ),
+  (
+    2,
+    'What is 15/5',
+    '3',
+    2,
+    '2016-04-06 18:15:10',
+    '2016-04-06 18:20:00'
+  );
+
+INSERT INTO `ANSWER` (`ANSWER_ID`, `ANSWER`, `QUESTION_ID`, `OWNER_ID`, `ANSWERED_TIME`) VALUES
+  (
+    1,
+    '40',
+    1,
+    4,
+    '2016-04-06 18:05:24'
+  ),
+  (
+    2,
+    '42',
+    1,
+    5,
+    '2016-04-06 18:06:44'
+  );
