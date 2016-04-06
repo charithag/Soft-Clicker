@@ -6,8 +6,10 @@ import org.softclicker.server.config.ConfigManager;
 import org.softclicker.server.config.DataSourceConfig;
 import org.softclicker.server.dao.exception.IllegalTransactionStateException;
 import org.softclicker.server.dao.exception.TransactionManagementException;
+import org.softclicker.server.database.ConnectionInvocationHandler;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -152,7 +154,7 @@ public class ScopingDataSource {
             this.openThreadScopedConnection();
             conn = currentConnection.get();
         }
-        return conn;
+        return getProxyConnection(conn);
     }
 
     private void closeThreadScopedConnection() {
@@ -174,5 +176,11 @@ public class ScopingDataSource {
             conn = dataSource.getConnection();
             currentConnection.set(conn);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Connection getProxyConnection(Connection conn) {
+        return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(),
+                new Class<?>[] { Connection.class }, new ConnectionInvocationHandler(conn));
     }
 }
