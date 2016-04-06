@@ -21,7 +21,7 @@ public class AbstractDatabaseTest {
         EmbeddedServer.startDB();
         scopingDataSource = new ScopingDataSource(new ServerConfigManager());
         DatabaseCreator creator = new DatabaseCreator(scopingDataSource);
-        creator.createDbStructureIfNotExists("SELECT * FROM USER");
+        creator.createDbStructureIfNotExists();
     }
 
 }
