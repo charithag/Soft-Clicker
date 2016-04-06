@@ -36,11 +36,11 @@ public class DatabaseCreator {
         this.scopingDataSource = scopingDataSource;
     }
 
-    public boolean createDbStructureIfNotExists(String checkSQL) {
+    public boolean createDbStructureIfNotExists() {
         synchronized (LOCK) {
             try {
                 scopingDataSource.beginTransactionScope();
-                if (isDbStructureCreated(checkSQL)) {
+                if (isDbStructureCreated("SELECT * FROM USER")) {
                     return false;
                 }
                 Path dbScript = getDbScript();

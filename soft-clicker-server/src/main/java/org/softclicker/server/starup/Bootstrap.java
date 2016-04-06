@@ -14,7 +14,7 @@ public class Bootstrap {
     public static void main(String[] args) {
         ScopingDataSource scopingDataSource = new ScopingDataSource(new ServerConfigManager());
         DatabaseCreator creator = new DatabaseCreator(scopingDataSource);
-        creator.createDbStructureIfNotExists("SELECT * FROM USER");
+        creator.createDbStructureIfNotExists();
         UserManager userManager = new UserManager(scopingDataSource);
         for(User user : userManager.getAllUsers()){
             log.info(user);
