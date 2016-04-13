@@ -10,6 +10,7 @@ import org.softclicker.server.entity.User;
 import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
+import org.softclicker.server.gui.MainApplication;
 
 public class Bootstrap {
 
@@ -38,5 +39,9 @@ public class Bootstrap {
             log.info(answer);
         }
         log.info("SoftClicker Server Started!");
+        // Start UI application
+        MainApplication app = new MainApplication();
+        app.main(null);
+        log.info("SoftClicker UI Started!");
     }
 }
