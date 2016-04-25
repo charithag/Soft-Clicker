@@ -1,4 +1,4 @@
-package org.softclicker.android.soft_clicker;
+package com.softclicker.android.apn.soft_clicker;
 
 import org.junit.Test;
 

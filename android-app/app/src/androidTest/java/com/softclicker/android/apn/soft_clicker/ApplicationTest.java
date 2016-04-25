@@ -1,4 +1,4 @@
-package org.softclicker.android.soft_clicker;
+package com.softclicker.android.apn.soft_clicker;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
