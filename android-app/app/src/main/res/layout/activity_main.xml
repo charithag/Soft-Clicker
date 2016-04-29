@@ -1,54 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/class_status_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_horizontal"
         android:text="Select your answer"
-        android:id="@+id/class_status_label"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RadioButton android:id="@+id/answer1"
+        android:orientation="vertical"
+        android:id="@+id/answerGroup">
+
+        <RadioButton
+            android:id="@+id/answer1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/answer2"
+            android:text="1" />
+
+        <RadioButton
+            android:id="@+id/answer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="B"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/answer3"
+            android:text="2" />
+
+        <RadioButton
+            android:id="@+id/answer3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="C"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/answer4"
+
+            android:text="3" />
+
+        <RadioButton
+            android:id="@+id/answer4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="D"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/answer5"
+            android:text="4" />
+
+        <RadioButton
+            android:id="@+id/answer5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="E"
-            android:onClick="onRadioButtonClicked"/>
+            android:text="5" />
     </RadioGroup>
 
     <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:text="Submit" />
 
 
 </LinearLayout>

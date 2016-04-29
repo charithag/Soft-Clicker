@@ -23,6 +23,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -156,6 +158,17 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+
+        // answerGroup
+        RadioGroup answerGroup = (RadioGroup) findViewById(R.id.answerGroup);
+        answerGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                String selectedOption = ((RadioButton) findViewById(checkedId)).getText().toString();
+                Toast.makeText(MainActivity.this, selectedOption, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
