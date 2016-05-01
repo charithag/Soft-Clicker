@@ -10,14 +10,30 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.softclicker.server.gui.controllers.main.MainController;
+import org.softclicker.server.manage.AnswerManager;
+import org.softclicker.server.manage.QuestionManager;
+import org.softclicker.server.manage.UserManager;
 
 /**
  * Created by chamika on 4/12/16.
  */
 public class MainApplication extends Application {
 
+    private static MainApplication instance;
+
+    private AnswerManager answerManager;
+    private QuestionManager questionManager;
+    private UserManager userManager;
+
     @FXMLViewFlowContext
     private ViewFlowContext flowContext;
+
+    public static MainApplication getInstance() {
+        if (instance == null) {
+            instance = new MainApplication();
+        }
+        return instance;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -46,6 +62,30 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+    }
+
+    public AnswerManager getAnswerManager() {
+        return answerManager;
+    }
+
+    public void setAnswerManager(AnswerManager answerManager) {
+        this.answerManager = answerManager;
+    }
+
+    public QuestionManager getQuestionManager() {
+        return questionManager;
+    }
+
+    public void setQuestionManager(QuestionManager questionManager) {
+        this.questionManager = questionManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
+    }
+
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
     }
 
     public static void main(String[] args) {

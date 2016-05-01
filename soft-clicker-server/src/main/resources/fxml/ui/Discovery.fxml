@@ -12,7 +12,7 @@
 			<Label styleClass="title-label" text="Start">Flat Buttons</Label>
 			<HBox spacing="40" style="-fx-padding: 0 0 0 50;">
 				<children>
-					<JFXButton buttonType="RAISED" prefHeight="40" prefWidth="100" style="-fx-text-fill:WHITE;-fx-background-color:#5264AE;-fx-font-size:14px;" text="Discovery" />
+					<JFXButton fx:id="buttonDiscovery" buttonType="RAISED" prefHeight="40" prefWidth="100" style="-fx-text-fill:WHITE;-fx-background-color:#5264AE;-fx-font-size:14px;" text="Discovery" />
 				</children>
 			</HBox>
 		</children>

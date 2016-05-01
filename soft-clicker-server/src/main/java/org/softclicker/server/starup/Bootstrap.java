@@ -40,8 +40,11 @@ public class Bootstrap {
         }
         log.info("SoftClicker Server Started!");
         // Start UI application
-        MainApplication app = new MainApplication();
-        app.main(null);
-        log.info("SoftClicker UI Started!");
+        MainApplication app = MainApplication.getInstance();
+        app.setAnswerManager(answerManager);
+        app.setQuestionManager(questionManager);
+        app.setUserManager(userManager);
+        app.main(args);
+        log.info("SoftClicker UI Finished!");
     }
 }

@@ -38,6 +38,12 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+        <!-- Message handler-->
+        <dependency>
+            <groupId>org.softclicker</groupId>
+            <artifactId>message-handler</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--JavaFX dependancies-->
         <dependency>
             <groupId>io.datafx</groupId>
