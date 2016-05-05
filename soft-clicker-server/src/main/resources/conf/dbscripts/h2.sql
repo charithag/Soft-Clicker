@@ -12,6 +12,25 @@ CREATE TABLE IF NOT EXISTS `USER` (
 );
 
 -- -----------------------------------------------------
+-- Table `MANAGES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `USER_CLASS_MANAGE` (
+  `USER_ID`  INTEGER,
+  `CLASS_ID` INTEGER,
+  PRIMARY KEY ( `USER_ID`, `CLASS_ID`)
+);
+
+-- -----------------------------------------------------
+-- Table `CLASS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `CLASS` (
+  `CLASS_ID`     INTEGER AUTO_INCREMENT,
+  `CLASS_NAME`         VARCHAR(255) NOT NULL,
+  `CLASS_YEAR`         INTEGER      NOT NULL,
+  PRIMARY KEY (`CLASS_ID`)
+);
+
+-- -----------------------------------------------------
 -- Table `QUESTION`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `QUESTION` (
@@ -19,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `QUESTION` (
   `QUESTION`       VARCHAR(255) NOT NULL,
   `CORRECT_ANSWER` VARCHAR(255) NOT NULL,
   `OWNER_ID`       INTEGER      NOT NULL,
+  `CLASS_ID` INTEGER NOT NULL,
   `CREATED_TIME`   TIMESTAMP    NOT NULL,
   `EXPIRE_TIME`    TIMESTAMP    NOT NULL,
   PRIMARY KEY (`QUESTION_ID`)
@@ -76,13 +96,28 @@ INSERT INTO `USER` (`USER_ID`, `FIRST_NAME`, `LAST_NAME`, `USER_NAME`, `PASSWORD
     'STUDENT'
   );
 
-INSERT INTO `QUESTION` (`QUESTION_ID`, `QUESTION`, `CORRECT_ANSWER`, `OWNER_ID`, `CREATED_TIME`, `EXPIRE_TIME`)
+
+INSERT INTO `CLASS` (`CLASS_ID`, `CLASS_NAME`,  `CLASS_YEAR`) VALUES
+  (
+    1,
+    'NETWORKING',
+    2016
+  );
+
+INSERT INTO `USER_CLASS_MANAGE` (`USER_ID`, `CLASS_ID`) VALUES
+  (
+    2,
+    1
+  );
+
+INSERT INTO `QUESTION` (`QUESTION_ID`, `QUESTION`, `CORRECT_ANSWER`, `OWNER_ID`, `CLASS_ID`, `CREATED_TIME`, `EXPIRE_TIME`)
 VALUES
   (
     1,
     'What is 20+20?',
     '40',
     2,
+    1,
     '2016-04-06 18:00:10',
     '2016-04-06 18:10:00'
   ),
@@ -91,6 +126,7 @@ VALUES
     'What is 15/5',
     '3',
     2,
+    1,
     '2016-04-06 18:15:10',
     '2016-04-06 18:20:00'
   );

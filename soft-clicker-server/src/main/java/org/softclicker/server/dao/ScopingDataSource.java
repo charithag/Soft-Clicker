@@ -61,7 +61,7 @@ public class ScopingDataSource {
 
     private static final Logger log = Logger.getLogger(ScopingDataSource.class);
     private final DataSource dataSource;
-    private final ThreadLocal<Connection> currentConnection = new ThreadLocal<Connection>();
+    private final ThreadLocal<Connection> currentConnection = new ThreadLocal<>();
 
     public ScopingDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -149,10 +149,11 @@ public class ScopingDataSource {
 
     public Connection getConnection() throws SQLException {
         Connection conn = currentConnection.get();
-        if (conn == null || conn.isClosed()) {
+        if (conn == null) {
             //Let's ensure our connection is open
             this.openThreadScopedConnection();
             conn = currentConnection.get();
+            log.warn("New connection is initiated!");
         }
         return getProxyConnection(conn);
     }

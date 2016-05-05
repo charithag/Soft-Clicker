@@ -58,4 +58,23 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
             }
         }
     }
+
+    public List<Question> getQuestionsByClass(String className) throws SQLException {
+        String sql = "SELECT * FROM `QUESTION` as q,`USER` as u, `CLASS` as c WHERE q.OWNER_ID=u.USER_ID AND c.CLASS_ID=Q.CLASS_ID AND CLASS_NAME=?";
+        List<Question> questions = new ArrayList<>();
+        try (
+                Connection conn = scopingDataSource.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+        ) {
+            stmt.setString(1, className);
+            try(ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    User user = DAOUtil.loadUser(rs);
+                    Question question = DAOUtil.loadQuestion(rs, user);
+                    questions.add(question);
+                }
+            }
+            return questions;
+        }
+    }
 }
