@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -168,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, selectedOption, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -248,10 +248,31 @@ public class MainActivity extends AppCompatActivity {
         studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             }
         });
 
+        // load current student ids
+
+
         studentSelectDialog.show();
+
+        // add user panel
+        Button buttonAddUser = (Button) promptsView.findViewById(R.id.buttonAddUser);
+        buttonAddUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater studentListLayoutInflater = LayoutInflater.from(MainActivity.this);
+                @SuppressLint("InflateParams")
+                View promptsView = studentListLayoutInflater.inflate(R.layout.add_user, null);
+
+                AlertDialog.Builder studentAddBuilder = new AlertDialog.Builder(MainActivity.this);
+                studentAddBuilder.setView(promptsView);
+                AlertDialog studentAddDialog = studentAddBuilder.create();
+
+                studentAddDialog.show();
+            }
+        });
     }
 
     private void connectWithAP(String ssid, String password) {
