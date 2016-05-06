@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.softclicker.server.gui.controllers.connection.DiscoveryController;
+import org.softclicker.server.gui.controllers.home.HomeController;
 import org.softclicker.server.gui.controllers.slidemenu.SideMenuController;
 import org.softclicker.server.gui.datafx.AnimatedFlowContainer;
 
@@ -87,7 +88,7 @@ public class MainController {
         // create the inner flow and content
         context = new ViewFlowContext();
         // set the default controller
-        Flow innerFlow = new Flow(DiscoveryController.class);
+        Flow innerFlow = new Flow(HomeController.class);
 
         flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
