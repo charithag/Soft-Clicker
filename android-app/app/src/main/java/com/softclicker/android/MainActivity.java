@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -18,7 +19,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +41,18 @@ import com.softclicker.android.student.StudentAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.softclicker.message.dao.impl.SoftClickAnswerDAOImpl;
+import org.softclicker.message.dao.impl.SoftClickBroadcastDAOImpl;
+import org.softclicker.message.dto.SoftClickAnswer;
+import org.softclicker.message.dto.SoftClickBroadcast;
+import org.softclicker.transport.handler.MessageHandler;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView statusLabel;
     private ListView listView;
     private AlertDialog apSelectDialog;
+    private DatagramSocket socket;
+    private MessageHandler messageHandler;
+    private Handler mHandler;
 
     private BroadcastReceiver wifiScanBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -113,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +138,93 @@ public class MainActivity extends AppCompatActivity {
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         statusLabel = (TextView) findViewById(R.id.class_status_label);
         sharedPref = getSharedPreferences(Constants.PREFERENCES_FILE, Context.MODE_PRIVATE);
+        mHandler = new Handler();
+
+        final RadioGroup answerGroup = (RadioGroup) findViewById(R.id.answerGroup);
+        Button btnSubmit = (Button) findViewById(R.id.button_submit);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String selectedStudent = sharedPref.getString(Constants.SELECTED_STUDENT, null);
+                if (selectedStudent == null) {
+                    selectStudent();
+                    return;
+                }
+
+                RadioButton checkedAnswer = (RadioButton) findViewById(answerGroup.getCheckedRadioButtonId());
+                if (checkedAnswer == null) {
+                    Toast.makeText(MainActivity.this, "Please select an answer first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String option = (String) checkedAnswer.getTag();
+                SoftClickAnswer.AnswerOption answerOption = SoftClickAnswer.AnswerOption.OPTION_1;
+                switch (option) {
+                    case "OPTION_1":
+                        answerOption = SoftClickAnswer.AnswerOption.OPTION_1;
+                        break;
+                    case "OPTION_2":
+                        answerOption = SoftClickAnswer.AnswerOption.OPTION_2;
+                        break;
+                    case "OPTION_3":
+                        answerOption = SoftClickAnswer.AnswerOption.OPTION_3;
+                        break;
+                    case "OPTION_4":
+                        answerOption = SoftClickAnswer.AnswerOption.OPTION_4;
+                        break;
+                    case "OPTION_5":
+                        answerOption = SoftClickAnswer.AnswerOption.OPTION_5;
+                        break;
+                }
+
+                final SoftClickAnswer softClickAnswer = new SoftClickAnswer();
+                softClickAnswer.setAnswerOption(answerOption);
+                softClickAnswer.setStudentId(selectedStudent);
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            String serverIP = sharedPref.getString(Constants.SERVER_IP, "");
+                            int port = sharedPref.getInt(Constants.SERVER_PORT, 0);
+                            Socket clientSocket = new Socket(serverIP, port);
+                            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                            outToServer.write(messageHandler.encodeAnswer(softClickAnswer));
+                            int response = clientSocket.getInputStream().read();
+                            if (response == 0x06) {
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getBaseContext(), "Answer saved", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } else if (response == 0x15) {
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getBaseContext(), "Answer rejected", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } else {
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getBaseContext(), "Unknown error", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                            clientSocket.close();
+                        } catch (IOException e) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getBaseContext(), "Unable to submit answer", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                }).start();
+            }
+        });
 
         LayoutInflater apListLayoutInflater = LayoutInflater.from(MainActivity.this);
         @SuppressLint("InflateParams")
@@ -170,28 +275,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // answerGroup
-        RadioGroup answerGroup = (RadioGroup) findViewById(R.id.answerGroup);
-        answerGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                String selectedOption = ((RadioButton) findViewById(checkedId)).getText().toString();
-                Toast.makeText(MainActivity.this, selectedOption, Toast.LENGTH_SHORT).show();
-            }
-        });
+        messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(), new SoftClickAnswerDAOImpl());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        progressDialog = ProgressDialog.show(this, "Connecting",
-                "Searching for WiFi Access Points.", true);
+        String selectedStudent = sharedPref.getString(Constants.SELECTED_STUDENT, null);
+        TextView txtStudentId = (TextView) findViewById(R.id.student_id_label);
+        if (txtStudentId != null) {
+            if (selectedStudent != null) {
+                txtStudentId.setText(selectedStudent);
+            } else {
+                txtStudentId.setText("Please add student first");
+            }
+        }
+
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (!wifiManager.isWifiEnabled()) {
+            progressDialog = ProgressDialog.show(this, "Connecting",
+                    "Searching for WiFi Access Points.", true);
             wifiManager.setWifiEnabled(true);
             Toast.makeText(getBaseContext(), "WiFi Enabled!", Toast.LENGTH_LONG).show();
-        } else if (wifiInfo != null && sharedPref.getString(Constants.SSID, "").equals(wifiInfo.getSSID().replace("\"", ""))) {
-            listenToServerBroadcast();
+        } else if (wifiInfo != null
+                && sharedPref.getString(Constants.SSID, "").equals(wifiInfo.getSSID().replace("\"", ""))) {
+            if (!sharedPref.contains(Constants.SERVER_IP)) {
+                listenToServerBroadcast();
+            } else if (selectedStudent == null) {
+                selectStudent();
+            }
             return;
         }
         obtainPermissionsToWiFiScan();
@@ -263,13 +375,13 @@ public class MainActivity extends AppCompatActivity {
                 apSelectDialog.show();
                 return true;
             case R.id.menu_select_user:
-                selectUser();
+                selectStudent();
             default:
                 return false;
         }
     }
 
-    private void selectUser() {
+    private void selectStudent() {
         LayoutInflater studentListLayoutInflater = LayoutInflater.from(MainActivity.this);
         @SuppressLint("InflateParams")
         View promptsView = studentListLayoutInflater.inflate(R.layout.select_student, null);
@@ -287,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor prefEditor = sharedPref.edit();
                     prefEditor.putString(Constants.STUDENT_IDS, updatedIds);
                     prefEditor.apply();
-                    selectUser();
+                    selectStudent();
                 } else {
                     String selectedStudent = sharedPref.getString(Constants.SELECTED_STUDENT, null);
                     TextView studentId = (TextView) findViewById(R.id.student_id_label);
@@ -382,7 +494,71 @@ public class MainActivity extends AppCompatActivity {
     private void listenToServerBroadcast() {
         String ssid = wifiManager.getConnectionInfo().getSSID().replace("\"", "");
         statusLabel.setText("Your are connected to " + ssid);
-        progressDialog.dismiss();
-        isAssociating = false;
+        final WifiManager.MulticastLock multicastLock = wifiManager.createMulticastLock(Constants.BORADCAST);
+        if (!multicastLock.isHeld()) {
+            multicastLock.acquire();
+        }
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = ProgressDialog.show(this, "Connecting",
+                "Searching for Soft Clicker server.", true);
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    byte[] recvBuf = new byte[15000];
+                    if (socket == null || socket.isClosed()) {
+                        socket = new DatagramSocket(Constants.BORADCAST_PORT, getBroadcastAddress());
+                        socket.setBroadcast(true);
+                    }
+                    socket.setSoTimeout(10000);
+                    DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
+                    Log.i("UDP", "Waiting for UDP broadcast");
+                    socket.receive(packet);
+
+                    String senderIP = packet.getAddress().getHostAddress();
+                    String message = new String(packet.getData()).trim();
+                    Log.i("UDP", "Got UDB broadcast from " + senderIP + ", message: " + message);
+
+                    SoftClickBroadcast softClickBroadcast = messageHandler.decodeBroadcast(packet.getData());
+                    SharedPreferences.Editor prefEditor = sharedPref.edit();
+                    prefEditor.putString(Constants.SERVER_IP, softClickBroadcast.getServerIP().getHostAddress());
+                    prefEditor.putString(Constants.SERVER_NAME, softClickBroadcast.getServerName());
+                    prefEditor.putInt(Constants.SERVER_PORT, softClickBroadcast.getPort());
+                    prefEditor.apply();
+
+                    socket.close();
+                } catch (Exception e) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Unable to detect soft-clicker server", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    Log.e("UDP", "no longer listening for UDP broadcasts cause of error " + e.getMessage());
+                } finally {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                        }
+                    });
+                    isAssociating = false;
+                    multicastLock.release();
+                }
+            }
+        }).start();
     }
+
+    private InetAddress getBroadcastAddress() throws IOException {
+        DhcpInfo dhcp = wifiManager.getDhcpInfo();
+        // handle null somehow
+
+        int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
+        byte[] quads = new byte[4];
+        for (int k = 0; k < 4; k++)
+            quads[k] = (byte) (broadcast >> (k * 8));
+        return InetAddress.getByAddress(quads);
+    }
+
 }
