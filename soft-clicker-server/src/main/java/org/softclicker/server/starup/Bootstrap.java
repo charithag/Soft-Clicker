@@ -38,6 +38,7 @@ public class Bootstrap {
         for (Answer answer : answerManager.getAllAnswers()) {
             log.info(answer);
         }
+//        questionManager.getQuestionsByClass("NETWORKING");
         log.info("SoftClicker Server Started!");
         // Start UI application
         MainApplication app = MainApplication.getInstance();
