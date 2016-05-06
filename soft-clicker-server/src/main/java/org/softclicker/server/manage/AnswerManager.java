@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.dao.impl.AnswerDAO;
 import org.softclicker.server.entity.Answer;
+import org.softclicker.server.exception.SoftClickerException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,37 +22,34 @@ public class AnswerManager {
         this.answerDAO = new AnswerDAO(scopingDataSource);
     }
 
-    public List<Answer> getAllAnswers() {
+    public List<Answer> getAllAnswers() throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return answerDAO.getAllAnswers();
         } catch (SQLException e) {
-            log.error("Error while retrieving answers list", e);
-            return new ArrayList<>();
+            throw new SoftClickerException("Error while retrieving answers list", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }
     }
 
-    public Answer getAnswerById(int answerId) {
+    public Answer getAnswerById(int answerId) throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return answerDAO.getAnswerById(answerId);
         } catch (SQLException e) {
-            log.error("Error occurred while retrieving answer with answer id: `" + answerId + "`", e);
-            return null;
+            throw new SoftClickerException("Error occurred while retrieving answer with answer id: `" + answerId + "`", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }
     }
 
-    public List<Answer> getAnswersByQuestionId(int questionId) {
+    public List<Answer> getAnswersByQuestionId(int questionId) throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return answerDAO.getAnswersByQuestionId(questionId);
         } catch (SQLException e) {
-            log.error("Error while retrieving answers list for question id: `" + questionId + "`", e);
-            return new ArrayList<>();
+            throw new SoftClickerException("Error while retrieving answers list for question id: `" + questionId + "`", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }

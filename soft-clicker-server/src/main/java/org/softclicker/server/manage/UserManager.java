@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.dao.impl.UserDAO;
 import org.softclicker.server.entity.User;
+import org.softclicker.server.exception.SoftClickerException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,25 +22,23 @@ public class UserManager {
         this.userDAO = new UserDAO(scopingDataSource);
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return userDAO.getAllUsers();
         } catch (SQLException e) {
-            log.error("Error while retrieving users list", e);
-            return new ArrayList<>();
+            throw new SoftClickerException("Error while retrieving users list", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }
     }
 
-    public User getUserById(int userId) {
+    public User getUserById(int userId) throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return userDAO.getUserById(userId);
         } catch (SQLException e) {
-            log.error("Error occurred while retrieving user with user id: `" + userId + "`", e);
-            return null;
+            throw new SoftClickerException("Error occurred while retrieving user with user id: `" + userId + "`", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }

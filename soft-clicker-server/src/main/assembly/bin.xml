@@ -48,5 +48,16 @@
                 <include>*.jar</include>
             </includes>
         </fileSet>
+
+        <!--
+            Copying files from /lib folder.
+        -->
+        <fileSet>
+            <directory>${project.basedir}/lib</directory>
+            <outputDirectory>lib/</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>
