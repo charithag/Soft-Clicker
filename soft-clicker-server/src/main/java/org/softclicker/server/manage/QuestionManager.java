@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.dao.impl.QuestionDAO;
 import org.softclicker.server.entity.Question;
+import org.softclicker.server.exception.SoftClickerException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,37 +22,34 @@ public class QuestionManager {
         this.questionDAO = new QuestionDAO(scopingDataSource);
     }
 
-    public List<Question> getAllQuestions() {
+    public List<Question> getAllQuestions() throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return questionDAO.getAllQuestions();
         } catch (SQLException e) {
-            log.error("Error while retrieving questions list", e);
-            return new ArrayList<>();
+            throw new SoftClickerException("Error while retrieving questions list", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }
     }
 
-    public Question getQuestionById(int questionId) {
+    public Question getQuestionById(int questionId) throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return questionDAO.getQuestionById(questionId);
         } catch (SQLException e) {
-            log.error("Error occurred while retrieving question with question id: `" + questionId + "`", e);
-            return null;
+            throw new SoftClickerException("Error occurred while retrieving question with question id: '" + questionId + "'", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }
     }
 
-    public List<Question> getQuestionsByClass(String className) {
+    public List<Question> getQuestionsByClass(String className) throws SoftClickerException {
         try {
             scopingDataSource.beginConnectionScope();
             return questionDAO.getQuestionsByClass(className);
         } catch (SQLException e) {
-            log.error("Error occurred while retrieving question with class name: `" + className + "`", e);
-            return null;
+            throw new SoftClickerException("Error occurred while retrieving question with class name: '" + className + "'", e);
         } finally {
             scopingDataSource.endConnectionScope();
         }
