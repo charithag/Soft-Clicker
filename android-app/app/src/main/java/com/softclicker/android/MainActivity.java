@@ -38,6 +38,9 @@ import java.util.List;
  * Created by User on 3/18/2016.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 0;
+
     private WifiManager wifiManager;
     private SharedPreferences sharedPref;
     private WifiConfiguration wifiConfig;
