@@ -12,16 +12,14 @@ import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import org.softclicker.server.gui.controllers.ParentController;
 import org.softclicker.server.gui.controllers.connection.DiscoveryController;
 import org.softclicker.server.gui.controllers.history.HistoryController;
 
 import javax.annotation.PostConstruct;
 
 @FXMLController(value = "/fxml/SideMenu.fxml", title = "Menu")
-public class SideMenuController {
-
-	@FXMLViewFlowContext
-	private ViewFlowContext context;
+public class SideMenuController extends ParentController {
 
 	@FXML
 	@ActionTrigger("newQuiz")
@@ -35,23 +33,11 @@ public class SideMenuController {
 	private JFXListView<?> sideList;
 
 	@PostConstruct
-	public void init() throws FlowException, VetoException {
+	public void init() {
+		super.init();
 		sideList.propagateMouseEventsToParent();
-		FlowHandler contentFlowHandler = (FlowHandler) context.getRegisteredObject("ContentFlowHandler");
-		Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
 		bindNodeToController(newQuiz, DiscoveryController.class, contentFlow, contentFlowHandler);
 		bindNodeToController(history, HistoryController.class, contentFlow, contentFlowHandler);
-	}
-
-	private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {
-		flow.withGlobalLink(node.getId(), controllerClass);
-		node.setOnMouseClicked((e) -> {
-			try {				
-				flowHandler.handle(node.getId());				
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
 	}
 
 }
