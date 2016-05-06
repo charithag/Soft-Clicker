@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.softclicker.server.entity.Answer;
 import org.softclicker.server.entity.Clazz;
 import org.softclicker.server.entity.Question;
+import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.manage.AnswerManager;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Created by chamika on 5/1/16.
  */
-@FXMLController(value = "/fxml/ui/History.fxml", title = "Menu")
+@FXMLController(value = "/fxml/ui/History.fxml", title = "History")
 public class HistoryController {
 
     private final static Logger log = LogManager.getLogger(HistoryController.class);
@@ -77,21 +78,25 @@ public class HistoryController {
 
     private void loadAnswers(int questionId) {
         AnswerManager answerManager = MainApplication.getInstance().getAnswerManager();
-        List<Answer> answersByQuestionId = answerManager.getAnswersByQuestionId(questionId);
-        log.info("answer count=" + answersByQuestionId.size());
-        HashMap<String, Integer> answersCount = new HashMap<>();
-        for (Answer answer : answersByQuestionId) {
-            Integer count = answersCount.get(answer.getAnswer());
-            if (count == null) {
-                count = 1;
-            } else {
-                ++count;
+        try {
+            List<Answer> answersByQuestionId = answerManager.getAnswersByQuestionId(questionId);
+            log.info("answer count=" + answersByQuestionId.size());
+            HashMap<String, Integer> answersCount = new HashMap<>();
+            for (Answer answer : answersByQuestionId) {
+                Integer count = answersCount.get(answer.getAnswer());
+                if (count == null) {
+                    count = 1;
+                } else {
+                    ++count;
+                }
+                answersCount.put(answer.getAnswer(), count);
             }
-            answersCount.put(answer.getAnswer(), count);
+            resetGraph();
+            answersCount.forEach((s, integer) -> chart.updateData(s, integer));
+            log.info("answers= " + answersCount);
+        } catch (SoftClickerException e) {
+            log.error("Unable to load answers", e);
         }
-        resetGraph();
-        answersCount.forEach((s, integer) -> chart.updateData(s, integer));
-        log.info("answers= " + answersCount);
     }
 
     /**
@@ -101,11 +106,15 @@ public class HistoryController {
     private void loadQuestions(String className) {
         //load all questions for a class Name
         resetQuestionsList();
-        questionsByClass = MainApplication.getInstance().getQuestionManager().getQuestionsByClass(className);
-        if (questionsByClass != null && !questionsByClass.isEmpty()) {
-            ObservableList<String> items = FXCollections.observableArrayList(
-                    questionsByClass.stream().map(Question::getQuestion).collect(Collectors.toList()));
-            questionsList.setItems(items);
+        try {
+            questionsByClass = MainApplication.getInstance().getQuestionManager().getQuestionsByClass(className);
+            if (questionsByClass != null && !questionsByClass.isEmpty()) {
+                ObservableList<String> items = FXCollections.observableArrayList(
+                        questionsByClass.stream().map(Question::getQuestion).collect(Collectors.toList()));
+                questionsList.setItems(items);
+            }
+        } catch (SoftClickerException e) {
+            log.error("Unable to questions", e);
         }
 
     }
