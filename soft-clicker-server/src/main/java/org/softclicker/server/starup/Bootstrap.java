@@ -7,10 +7,12 @@ import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.entity.Answer;
 import org.softclicker.server.entity.Question;
 import org.softclicker.server.entity.User;
+import org.softclicker.server.exception.SoftClickerException;
+import org.softclicker.server.gui.MainApplication;
+import org.softclicker.server.http.ServerFactory;
 import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
-import org.softclicker.server.gui.MainApplication;
 
 public class Bootstrap {
 
@@ -20,26 +22,39 @@ public class Bootstrap {
         ScopingDataSource scopingDataSource = new ScopingDataSource(new ServerConfigManager());
         DatabaseCreator creator = new DatabaseCreator(scopingDataSource);
         creator.createDbStructureIfNotExists();
-        //read all users
-        log.info("-----------------Users-------------------");
         UserManager userManager = new UserManager(scopingDataSource);
-        for (User user : userManager.getAllUsers()) {
-            log.info(user);
+        QuestionManager questionManager = new QuestionManager(scopingDataSource);
+        AnswerManager answerManager = new AnswerManager(scopingDataSource);
+        //read all users
+        try {
+            log.info("-----------------Users-------------------");
+            for (User user : userManager.getAllUsers()) {
+                log.info(user);
+            }
+        } catch (SoftClickerException e) {
+            log.error("Error occurred while retrieving User records.", e);
         }
         //read all questions
-        log.info("---------------Questions-----------------");
-        QuestionManager questionManager = new QuestionManager(scopingDataSource);
-        for (Question question : questionManager.getAllQuestions()) {
-            log.info(question);
+        try {
+            log.info("---------------Questions-----------------");
+            for (Question question : questionManager.getAllQuestions()) {
+                log.info(question);
+            }
+        } catch (SoftClickerException e) {
+            log.error("Error occurred while retrieving Question records.", e);
         }
         //read all answers
-        log.info("----------------Answers------------------");
-        AnswerManager answerManager = new AnswerManager(scopingDataSource);
-        for (Answer answer : answerManager.getAllAnswers()) {
-            log.info(answer);
+        try {
+            log.info("----------------Answers------------------");
+            for (Answer answer : answerManager.getAllAnswers()) {
+                log.info(answer);
+            }
+        } catch (SoftClickerException e) {
+            log.error("Error occurred while retrieving Answer records.", e);
         }
 //        questionManager.getQuestionsByClass("NETWORKING");
         log.info("SoftClicker Server Started!");
+        ServerFactory.createServer();
         // Start UI application
         MainApplication app = MainApplication.getInstance();
         app.setAnswerManager(answerManager);
