@@ -18,6 +18,7 @@ import org.softclicker.server.entity.Question;
 import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
+import org.softclicker.server.gui.controllers.ParentController;
 import org.softclicker.server.manage.AnswerManager;
 
 import javax.annotation.PostConstruct;
@@ -29,12 +30,9 @@ import java.util.stream.Collectors;
  * Created by chamika on 5/1/16.
  */
 @FXMLController(value = "/fxml/ui/History.fxml", title = "History")
-public class HistoryController {
+public class HistoryController extends ParentController{
 
     private final static Logger log = LogManager.getLogger(HistoryController.class);
-
-    @FXMLViewFlowContext
-    private ViewFlowContext context;
 
     @FXML
     private Pane chartPane;
@@ -52,6 +50,7 @@ public class HistoryController {
 
     @PostConstruct
     public void init() {
+        super.init();
         if (((Pane) context.getRegisteredObject("ContentPane")).getChildren().size() > 0)
             Platform.runLater(() -> ((Pane) ((Pane) context.getRegisteredObject("ContentPane")).getChildren().get(0)).getChildren().remove(1));
 

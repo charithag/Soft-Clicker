@@ -10,6 +10,9 @@ import javafx.scene.layout.Pane;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.gui.controllers.ParentController;
+import org.softclicker.server.gui.controllers.connection.DiscoveryController;
+import org.softclicker.server.gui.controllers.history.HistoryController;
+import org.softclicker.server.gui.controllers.quiz.NewQuizController;
 
 import javax.annotation.PostConstruct;
 
@@ -28,11 +31,12 @@ public class HomeController extends ParentController{
 
     @PostConstruct
     public void init() {
+        super.init();
         if (((Pane) context.getRegisteredObject("ContentPane")).getChildren().size() > 0)
             Platform.runLater(() -> ((Pane) ((Pane) context.getRegisteredObject("ContentPane")).getChildren().get(0)).getChildren().remove(1));
-        
-        historyButton.setOnAction(event -> {});
-        newQuizButton.setOnAction(event -> {});
+
+        bindNodeToController(historyButton, HistoryController.class, contentFlow, contentFlowHandler);
+        bindNodeToController(newQuizButton, NewQuizController.class, contentFlow, contentFlowHandler);
     }
 
 }
