@@ -118,7 +118,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>Bootstrap</mainClass>
+                            <mainClass>org.softclicker.server.starup.Bootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

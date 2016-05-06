@@ -56,6 +56,17 @@ public class QuestionManager {
         }
     }
 
+    public List<Question> getQuestionsByClassID(int classID) throws SoftClickerException {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return questionDAO.getQuestionsByClassID(classID);
+        } catch (SQLException e) {
+            throw new SoftClickerException("Error occurred while retrieving question with class ID: '" + classID + "'", e);
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
+
     public List<Clazz> getValidClasses()
     {
         try {
@@ -64,6 +75,18 @@ public class QuestionManager {
         } catch (SQLException e) {
             log.error("Error occurred while retrieving all the answered classes", e);
             return null;
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
+
+    public boolean saveQuestion(Question question) {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return questionDAO.saveQuestion(question);
+        } catch (SQLException e) {
+            log.error("Error occurred while saving question", e);
+            return false;
         } finally {
             scopingDataSource.endConnectionScope();
         }

@@ -8,6 +8,10 @@ import java.util.Date;
  */
 public class Answer {
 
+    public enum ANSWERS{
+        A,B,C,D,E
+    }
+
     final private int answerId;
     final private String answer;
     final private Question question;

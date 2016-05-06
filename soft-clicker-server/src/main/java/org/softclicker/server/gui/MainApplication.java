@@ -9,6 +9,10 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.softclicker.server.entity.User;
+import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.controllers.main.MainController;
 import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.manage.ClazzManager;
@@ -19,6 +23,8 @@ import org.softclicker.server.manage.UserManager;
  * Created by chamika on 4/12/16.
  */
 public class MainApplication extends Application {
+
+    private final static Logger log = LogManager.getLogger(MainApplication.class);
 
     private static MainApplication instance;
 
@@ -64,6 +70,16 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+    }
+
+    public User getLoggedUser()
+    {
+        try {
+            return  userManager.getAllUsers().get(0);
+        } catch (SoftClickerException e) {
+            log.error("Logged User not found",e);
+            return null;
+        }
     }
 
     public AnswerManager getAnswerManager() {

@@ -6,13 +6,9 @@ import io.datafx.controller.FXMLController;
 import javafx.fxml.FXML;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.chainsaw.Main;
-import org.softclicker.server.dao.impl.QuestionDAO;
 import org.softclicker.server.entity.Clazz;
-import org.softclicker.server.entity.Question;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.controllers.ParentController;
-import org.softclicker.server.gui.controllers.history.HistoryController;
 
 import javax.annotation.PostConstruct;
 
