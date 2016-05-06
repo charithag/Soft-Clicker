@@ -94,6 +94,10 @@ public class HistoryController {
         log.info("answers= " + answersCount);
     }
 
+    /**
+     * Load and show questions for the class name
+     * @param className
+     */
     private void loadQuestions(String className) {
         //load all questions for a class Name
         resetQuestionsList();
@@ -106,6 +110,9 @@ public class HistoryController {
 
     }
 
+    /**
+     * Load the classes which have questions
+     */
     private void loadClasses() {
         resetQuestionsList();
         validClasses = MainApplication.getInstance().getQuestionManager().getValidClasses();

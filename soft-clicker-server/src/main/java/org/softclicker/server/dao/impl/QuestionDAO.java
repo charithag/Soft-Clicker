@@ -80,7 +80,7 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
     }
 
     /**
-     * Retrieve classes that have questions
+     * Retrieve classes that have questions in DB
      * @return
      * @throws SQLException
      */
