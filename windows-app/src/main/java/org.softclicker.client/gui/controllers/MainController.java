@@ -5,8 +5,6 @@ import io.datafx.controller.FXMLController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.FlowHandler;
-import io.datafx.controller.flow.container.AnimatedFlowContainer;
-import io.datafx.controller.flow.container.ContainerAnimations;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
@@ -14,20 +12,14 @@ import io.datafx.controller.util.VetoException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
-import org.apache.log4j.chainsaw.Main;
 import org.softclicker.client.gui.MainWindow;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +31,7 @@ import javax.annotation.PostConstruct;
 public class MainController {
 
     @FXML
-    private AnchorPane mainPane;
+    private Pane mainPane;
 
     @FXML
     private Button openingButton;

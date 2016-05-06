@@ -16,6 +16,20 @@ import java.net.InetAddress;
  */
 public class TransportManager {
 
+    private static TransportManager instance;
+    private String host = "localhost";
+
+    public static TransportManager getInstance() {
+
+        if (instance == null) {
+            instance = new TransportManager();
+        }
+        return instance;
+    }
+
+    private TransportManager() {
+    }
+
     public void sendAnswers(String studentId, SoftClickAnswer.AnswerOption answerOption) {
         MessageHandler messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(),
                 new SoftClickAnswerDAOImpl());
@@ -27,17 +41,21 @@ public class TransportManager {
         byte[] message = messageHandler.encodeAnswer(softClickAnswerEntity);
 
         try {
-
-
-            BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
             DatagramSocket clientSocket = new DatagramSocket();
-            InetAddress IPAddress = InetAddress.getByName("localhost");
-//            byte[] receiveData = new byte[1024];
+            InetAddress IPAddress = InetAddress.getByName(host);
 
             DatagramPacket sendPacket = new DatagramPacket(message, message.length, IPAddress, 8080);
             clientSocket.send(sendPacket);
 
         } catch (Exception ex) {
         }
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }

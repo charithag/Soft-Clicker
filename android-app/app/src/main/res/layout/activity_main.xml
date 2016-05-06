@@ -10,49 +10,54 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_gravity="center_horizontal"
             android:text="@string/txt_answer"
-            android:layout_gravity="center_horizontal"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/answerGroup">
+                android:id="@+id/answerGroup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
         <RadioButton
                 android:id="@+id/answer1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="OPTION_1"
                 android:text="@string/txt_option_1"/>
 
         <RadioButton
                 android:id="@+id/answer2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="OPTION_2"
                 android:text="@string/txt_option_2"/>
 
         <RadioButton
                 android:id="@+id/answer3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="OPTION_3"
                 android:text="@string/txt_option_3"/>
 
         <RadioButton
                 android:id="@+id/answer4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="OPTION_4"
                 android:text="@string/txt_option_4"/>
 
         <RadioButton
                 android:id="@+id/answer5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="OPTION_5"
                 android:text="@string/txt_option_5"/>
     </RadioGroup>
 
@@ -70,11 +75,11 @@
             android:layout_weight="0.99"/>
 
     <TextView
+            android:id="@+id/class_status_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/class_status_label"
             android:layout_gravity="center_horizontal"
-            android:text="@string/txt_status"/>
+            android:text="@string/txt_status"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </LinearLayout>

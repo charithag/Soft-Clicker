@@ -7,13 +7,15 @@ package org.softclicker.client.gui.controllers;
 import io.datafx.controller.FXMLController;
 import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.util.VetoException;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToolBar;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.softclicker.client.gui.MainWindow;
+import org.softclicker.client.transport.TransportManager;
+import org.softclicker.message.dto.SoftClickAnswer;
 
 import javax.annotation.PostConstruct;
 
@@ -21,7 +23,7 @@ import javax.annotation.PostConstruct;
 public class AnswerPane {
 
     @FXML
-    private AnchorPane answerPane;
+    private Pane answerPane;
 
     @FXML
     private ToolBar idToolBar;
@@ -44,24 +46,78 @@ public class AnswerPane {
     @FXML
     private Button submitButton;
 
+    @FXML
+    private RadioButton radioButton1;
+
+    @FXML
+    private RadioButton radioButton2;
+
+    @FXML
+    private RadioButton radioButton3;
+
+    @FXML
+    private RadioButton radioButton4;
+
+    @FXML
+    private Label questionNoLable;
+
     private String studentId;
+    private SoftClickAnswer.AnswerOption answerOption;
 
     @PostConstruct
     public void init() throws FlowException, VetoException {
 
-        Stage stage  = MainWindow.primaryStage;
-        idoOutputLable.setText( this.studentId );
+        Stage stage = MainWindow.primaryStage;
+        idoOutputLable.setText(this.studentId);
+        final ToggleGroup group = new ToggleGroup();
+        radioButton1.setToggleGroup(group);
+        radioButton2.setToggleGroup(group);
+        radioButton3.setToggleGroup(group);
+        radioButton4.setToggleGroup(group);
+
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                if (radioButton1.isSelected()) {
+                    answerOption = SoftClickAnswer.AnswerOption.OPTION_1;
+                } else if (radioButton2.isSelected()) {
+                    answerOption = SoftClickAnswer.AnswerOption.OPTION_2;
+                } else if (radioButton3.isSelected()) {
+                    answerOption = SoftClickAnswer.AnswerOption.OPTION_3;
+                } else {
+                    answerOption = SoftClickAnswer.AnswerOption.OPTION_4;
+                }
+
+                TransportManager manager = TransportManager.getInstance();
+                if (studentId == null) {
+                    studentId = "Anonymus";
+                    manager.sendAnswers(studentId, answerOption);
+                }
+            }
+
+        });
+
+        resetButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                radioButton1.setSelected(false);
+                radioButton2.setSelected(false);
+                radioButton3.setSelected(false);
+                radioButton4.setSelected(false);
+            }
+
+        });
     }
 
-    public AnchorPane getAnswerPane() {
-        if (this.answerPane == null)
-        {
-            this.answerPane = new AnchorPane();
+    public Pane getAnswerPane() {
+        if (this.answerPane == null) {
+            this.answerPane = new Pane();
         }
         return answerPane;
     }
 
-    public void initData(String studentId)
-    {this.studentId = studentId;}
+    public void initData(String studentId) {
+        this.studentId = studentId;
+    }
 }
 
