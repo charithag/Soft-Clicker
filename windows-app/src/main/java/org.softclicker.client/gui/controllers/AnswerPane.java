@@ -12,6 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import org.softclicker.client.gui.MainWindow;
+
 import javax.annotation.PostConstruct;
 
 @FXMLController(value = "/fxml/answerPane.fxml", title = "Soft Clicker")
@@ -43,16 +46,22 @@ public class AnswerPane {
 
     private String studentId;
 
-    public AnswerPane(String studentId )
-    {
-        this.studentId = studentId;
-    }
-
     @PostConstruct
     public void init() throws FlowException, VetoException {
 
+        Stage stage  = MainWindow.primaryStage;
         idoOutputLable.setText( this.studentId );
-
     }
+
+    public AnchorPane getAnswerPane() {
+        if (this.answerPane == null)
+        {
+            this.answerPane = new AnchorPane();
+        }
+        return answerPane;
+    }
+
+    public void initData(String studentId)
+    {this.studentId = studentId;}
 }
 

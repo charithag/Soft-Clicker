@@ -12,6 +12,7 @@
 		<String fx:value="side-menu" />
 	</styleClass>
 	<JFXListView  fx:id="sideList">
+		<Label fx:id="home"> Home </Label>
 		<Label fx:id="newQuiz"> New Quiz </Label>
 		<Label fx:id="history"> History </Label>
 	</JFXListView>
