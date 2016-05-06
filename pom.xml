@@ -12,6 +12,7 @@
         <module>message-handler</module>
         <module>android-app</module>
         <module>soft-clicker-server</module>
+        <module>windows-app</module>
     </modules>
     <name>Soft Clicker Parent</name>
 

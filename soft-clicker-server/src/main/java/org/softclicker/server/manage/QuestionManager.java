@@ -4,6 +4,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.dao.impl.QuestionDAO;
+import org.softclicker.server.entity.Clazz;
 import org.softclicker.server.entity.Question;
 import org.softclicker.server.exception.SoftClickerException;
 
@@ -50,6 +51,19 @@ public class QuestionManager {
             return questionDAO.getQuestionsByClass(className);
         } catch (SQLException e) {
             throw new SoftClickerException("Error occurred while retrieving question with class name: '" + className + "'", e);
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
+
+    public List<Clazz> getValidClasses()
+    {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return questionDAO.getValidClasses();
+        } catch (SQLException e) {
+            log.error("Error occurred while retrieving all the answered classes", e);
+            return null;
         } finally {
             scopingDataSource.endConnectionScope();
         }
