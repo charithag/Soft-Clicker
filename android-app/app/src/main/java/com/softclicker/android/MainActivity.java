@@ -1,5 +1,6 @@
 package com.softclicker.android;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -9,11 +10,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -31,6 +34,10 @@ import android.widget.Toast;
 
 import com.softclicker.android.apn.ApnAdapter;
 import com.softclicker.android.apn.ApnData;
+import com.softclicker.android.student.StudentAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +46,9 @@ import java.util.List;
  * Created by User on 3/18/2016.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 0;
+
     private WifiManager wifiManager;
     private SharedPreferences sharedPref;
     private WifiConfiguration wifiConfig;
@@ -184,6 +194,35 @@ public class MainActivity extends AppCompatActivity {
             listenToServerBroadcast();
             return;
         }
+        obtainPermissionsToWiFiScan();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startWiFiScan();
+        } else {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (!apSelectDialog.isShowing()) {
+                apSelectDialog.show();
+            }
+        }
+    }
+
+    private void obtainPermissionsToWiFiScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
+        } else {
+            startWiFiScan();
+        }
+    }
+
+    private void startWiFiScan() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         registerReceiver(wifiScanBroadcastReceiver, intentFilter);
@@ -220,13 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 prefEditor.remove(Constants.SSID);
                 prefEditor.remove(Constants.PASSWORD);
                 prefEditor.apply();
-                IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-                registerReceiver(wifiScanBroadcastReceiver, intentFilter);
-                intentFilter = new IntentFilter();
-                intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                registerReceiver(wifiConnectionReceiver, intentFilter);
-                wifiManager.startScan();
+                obtainPermissionsToWiFiScan();
                 apSelectDialog.show();
                 return true;
             case R.id.menu_select_user:
@@ -239,38 +272,83 @@ public class MainActivity extends AppCompatActivity {
     private void selectUser() {
         LayoutInflater studentListLayoutInflater = LayoutInflater.from(MainActivity.this);
         @SuppressLint("InflateParams")
-        View promptsView = studentListLayoutInflater.inflate(R.layout.select_user, null);
+        View promptsView = studentListLayoutInflater.inflate(R.layout.select_student, null);
         AlertDialog.Builder studentSelectBuilder = new AlertDialog.Builder(MainActivity.this);
         studentSelectBuilder.setView(promptsView);
-        AlertDialog studentSelectDialog = studentSelectBuilder.create();
+        final AlertDialog studentSelectDialog = studentSelectBuilder.create();
 
-        ListView studentListView = (ListView) promptsView.findViewById(R.id.studentListView);
-        studentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        studentSelectDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onDismiss(DialogInterface dialog) {
+                String studentIds = sharedPref.getString(Constants.STUDENT_IDS, "[]");
+                String updatedIds = sharedPref.getString(Constants.UPDATED_STUDENT_IDS, "[]");
 
+                if (!studentIds.equals(updatedIds)) {
+                    SharedPreferences.Editor prefEditor = sharedPref.edit();
+                    prefEditor.putString(Constants.STUDENT_IDS, updatedIds);
+                    prefEditor.apply();
+                    selectUser();
+                } else {
+                    String selectedStudent = sharedPref.getString(Constants.SELECTED_STUDENT, null);
+                    TextView studentId = (TextView) findViewById(R.id.student_id_label);
+                    if (selectedStudent != null && studentId != null) {
+                        studentId.setText(selectedStudent);
+                        Toast.makeText(MainActivity.this, selectedStudent + " is selected", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "You need to select a student first", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
+        final ArrayList<String> students = new ArrayList<>();
+        JSONArray studentsJsonArray = new JSONArray();
+        try {
+            studentsJsonArray = new JSONArray(sharedPref.getString(Constants.STUDENT_IDS, "[]"));
+            for (int i = 0; i < studentsJsonArray.length(); i++) {
+                students.add(studentsJsonArray.getString(i));
+            }
+        } catch (JSONException ignored) {
+        }
+        ListView studentListView = (ListView) promptsView.findViewById(R.id.student_list);
+        StudentAdapter studentsAdaptor = new StudentAdapter(getApplicationContext(), studentSelectDialog, students);
+        studentListView.setAdapter(studentsAdaptor);
+
         // load current student ids
-
-
         studentSelectDialog.show();
 
-        // add user panel
-        Button buttonAddUser = (Button) promptsView.findViewById(R.id.buttonAddUser);
-        buttonAddUser.setOnClickListener(new View.OnClickListener() {
+        Button btnAddNewStudent = (Button) promptsView.findViewById(R.id.button_add_new_student);
+        final JSONArray finalStudentsJsonArray = studentsJsonArray;
+        btnAddNewStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater studentListLayoutInflater = LayoutInflater.from(MainActivity.this);
                 @SuppressLint("InflateParams")
-                View promptsView = studentListLayoutInflater.inflate(R.layout.add_user, null);
+                final View promptsView = studentListLayoutInflater.inflate(R.layout.add_student, null);
 
                 AlertDialog.Builder studentAddBuilder = new AlertDialog.Builder(MainActivity.this);
                 studentAddBuilder.setView(promptsView);
-                AlertDialog studentAddDialog = studentAddBuilder.create();
+                final AlertDialog studentAddDialog = studentAddBuilder.create();
 
                 studentAddDialog.show();
+
+                Button btnAddStudent = (Button) promptsView.findViewById(R.id.button_add_student);
+                btnAddStudent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText txtStudentId = (EditText) promptsView.findViewById(R.id.student_name);
+                        if (txtStudentId != null) {
+                            finalStudentsJsonArray.put(txtStudentId.getText().toString());
+                            SharedPreferences.Editor prefEditor = sharedPref.edit();
+                            prefEditor.putString(Constants.UPDATED_STUDENT_IDS, finalStudentsJsonArray.toString());
+                            prefEditor.apply();
+                            studentAddDialog.dismiss();
+                            studentSelectDialog.dismiss();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Please add a student Id", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }

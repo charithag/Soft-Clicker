@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="1">
 
     <TextView
-        android:id="@+id/class_status_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Select your answer"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:id="@+id/student_id_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/txt_answer"
+            android:layout_gravity="center_horizontal"/>
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -19,43 +26,55 @@
         android:id="@+id/answerGroup">
 
         <RadioButton
-            android:id="@+id/answer1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1" />
+                android:id="@+id/answer1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_option_1"/>
 
         <RadioButton
-            android:id="@+id/answer2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2" />
+                android:id="@+id/answer2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_option_2"/>
 
         <RadioButton
-            android:id="@+id/answer3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="3" />
-
-        <RadioButton
-            android:id="@+id/answer4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4" />
+                android:id="@+id/answer3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_option_3"/>
 
         <RadioButton
-            android:id="@+id/answer5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5" />
+                android:id="@+id/answer4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_option_4"/>
+
+        <RadioButton
+                android:id="@+id/answer5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_option_5"/>
     </RadioGroup>
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Submit" />
+            android:id="@+id/button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/txt_submit"/>
 
+    <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.99"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/class_status_label"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/txt_status"/>
 
 </LinearLayout>
