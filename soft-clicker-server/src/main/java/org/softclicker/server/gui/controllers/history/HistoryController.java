@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.entity.Answer;
+import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.manage.AnswerManager;
@@ -64,7 +65,13 @@ public class HistoryController {
 
     private void loadAnswers(int questionId) {
         AnswerManager answerManager = MainApplication.getInstance().getAnswerManager();
-        List<Answer> answersByQuestionId = answerManager.getAnswersByQuestionId(questionId);
+        List<Answer> answersByQuestionId = null;
+        try {
+            answersByQuestionId = answerManager.getAnswersByQuestionId(questionId);
+        } catch (SoftClickerException e) {
+            //TODO: handle this error on ui
+            log.error("Error occurred retrieving question with id '" + questionId + "'", e);
+        }
         HashMap<String,Integer> answersCount = new HashMap<>();
         for (Answer answer : answersByQuestionId) {
             Integer count = answersCount.get(answer.getAnswer());
