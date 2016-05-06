@@ -113,6 +113,14 @@ public class AnswerChart extends BarChart<Number, String> {
         }
     }
 
+    /**
+     * Clears data. Call this if the displaying question changes
+     */
+    public void clear(){
+        this.dataMap.clear();
+        this.series.getData().clear();
+    }
+
     public String getQuestionName() {
         return questionName;
     }

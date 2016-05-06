@@ -3,6 +3,7 @@ package org.softclicker.server.dao.impl;
 import org.apache.log4j.Logger;
 import org.softclicker.server.dao.DAOUtil;
 import org.softclicker.server.dao.ScopingDataSource;
+import org.softclicker.server.entity.Clazz;
 import org.softclicker.server.entity.Question;
 import org.softclicker.server.entity.User;
 
@@ -67,7 +68,7 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
                 PreparedStatement stmt = conn.prepareStatement(sql);
         ) {
             stmt.setString(1, className);
-            try(ResultSet rs = stmt.executeQuery(sql)) {
+            try(ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = DAOUtil.loadUser(rs);
                     Question question = DAOUtil.loadQuestion(rs, user);
@@ -75,6 +76,28 @@ public class QuestionDAO extends AbstractGenericDAO<Question> {
                 }
             }
             return questions;
+        }
+    }
+
+    /**
+     * Retrieve classes that have questions
+     * @return
+     * @throws SQLException
+     */
+    public List<Clazz> getValidClasses() throws SQLException {
+        String sql = "SELECT DISTINCT c.CLASS_ID,c.CLASS_NAME,c.CLASS_YEAR FROM `QUESTION` as q,`USER` as u, `CLASS` as c WHERE q.OWNER_ID=u.USER_ID AND c.CLASS_ID=Q.CLASS_ID ";
+        List<Clazz> clazzes = new ArrayList<>();
+        try (
+                Connection conn = scopingDataSource.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+        ) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Clazz clazz = DAOUtil.loadClass(rs, null);
+                    clazzes.add(clazz);
+                }
+            }
+            return clazzes;
         }
     }
 }

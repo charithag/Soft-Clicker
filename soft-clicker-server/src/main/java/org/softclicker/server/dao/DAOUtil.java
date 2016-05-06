@@ -3,6 +3,7 @@ package org.softclicker.server.dao;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.entity.Answer;
+import org.softclicker.server.entity.Clazz;
 import org.softclicker.server.entity.Question;
 import org.softclicker.server.entity.User;
 
@@ -61,5 +62,17 @@ public final class DAOUtil {
 
     public static Answer loadAnswer(ResultSet rs, Question question, User owner) throws SQLException {
         return loadAnswer(rs, question, owner, "");
+    }
+
+    public static Clazz loadClass(ResultSet rs, User owner, String columnPrefix)
+            throws SQLException {
+        int classID = rs.getInt(columnPrefix + "CLASS_ID");
+        String className = rs.getString(columnPrefix + "CLASS_NAME");
+        int year = rs.getInt(columnPrefix + "CLASS_YEAR");
+        return new Clazz(classID, className, year);
+    }
+
+    public static Clazz loadClass(ResultSet rs, User owner) throws SQLException {
+        return loadClass(rs, owner, "");
     }
 }

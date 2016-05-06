@@ -13,6 +13,8 @@ import javafx.scene.layout.Pane;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.entity.Answer;
+import org.softclicker.server.entity.Clazz;
+import org.softclicker.server.entity.Question;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.manage.AnswerManager;
@@ -20,6 +22,7 @@ import org.softclicker.server.manage.AnswerManager;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by chamika on 5/1/16.
@@ -43,54 +46,85 @@ public class HistoryController {
 
     private AnswerChart chart;
 
+    private List<Clazz> validClasses;
+    private List<Question> questionsByClass;
+
     @PostConstruct
     public void init() {
         if (((Pane) context.getRegisteredObject("ContentPane")).getChildren().size() > 0)
             Platform.runLater(() -> ((Pane) ((Pane) context.getRegisteredObject("ContentPane")).getChildren().get(0)).getChildren().remove(1));
 
+        classesCombo.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            int selectedIndex = newValue.intValue();
+            if (validClasses.size() > selectedIndex) {
+                loadQuestions(validClasses.get(selectedIndex).getName());
+            }
+        });
+
+        questionsList.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            int selectedIndex = newValue.intValue();
+            if (questionsByClass.size() > selectedIndex) {
+                loadAnswers(questionsByClass.get(selectedIndex).getQuestionId());
+            }
+        });
+
         chart = new AnswerChart();
         chartPane.getChildren().add(chart);
-        chart.updateData("A",14);
-        chart.updateData("B",0);
-        chart.updateData("C",10);
-        chart.updateData("E",15);
-        chart.updateData("A",20);
 
-        //TODO pass correct values
+        // set values to classes combo box
         loadClasses();
-        loadQuestions(1);
-//        loadAnswers(1);
     }
 
     private void loadAnswers(int questionId) {
         AnswerManager answerManager = MainApplication.getInstance().getAnswerManager();
         List<Answer> answersByQuestionId = answerManager.getAnswersByQuestionId(questionId);
-        HashMap<String,Integer> answersCount = new HashMap<>();
+        log.info("answer count=" + answersByQuestionId.size());
+        HashMap<String, Integer> answersCount = new HashMap<>();
         for (Answer answer : answersByQuestionId) {
             Integer count = answersCount.get(answer.getAnswer());
-            if(count == null){
-                answersCount.put(answer.getAnswer(),1);
-            }else {
+            if (count == null) {
+                count = 1;
+            } else {
                 ++count;
             }
+            answersCount.put(answer.getAnswer(), count);
         }
-        answersCount.forEach((s, integer) -> chart.updateData(s,integer));
+        resetGraph();
+        answersCount.forEach((s, integer) -> chart.updateData(s, integer));
+        log.info("answers= " + answersCount);
     }
 
-    private void loadQuestions(int classId)
-    {
-        //TODO load all questions for a class ID (after DB change)
-        ObservableList<String> items = FXCollections.observableArrayList (
-                "Question 1", "Question 2", "Question 3", "Question 4");
-        questionsList.setItems(items);
+    private void loadQuestions(String className) {
+        //load all questions for a class Name
+        resetQuestionsList();
+        questionsByClass = MainApplication.getInstance().getQuestionManager().getQuestionsByClass(className);
+        if (questionsByClass != null && !questionsByClass.isEmpty()) {
+            ObservableList<String> items = FXCollections.observableArrayList(
+                    questionsByClass.stream().map(Question::getQuestion).collect(Collectors.toList()));
+            questionsList.setItems(items);
+        }
+
     }
 
-    private void loadClasses()
-    {
-        //TODO load all classes
-        ObservableList<String> items = FXCollections.observableArrayList (
-                "WAN 2016", "WAN 2015", "AOS 2016");
-        classesCombo.setItems(items);
+    private void loadClasses() {
+        resetQuestionsList();
+        validClasses = MainApplication.getInstance().getQuestionManager().getValidClasses();
+        if (validClasses != null && !validClasses.isEmpty()) {
+            ObservableList<String> items = FXCollections.observableArrayList(
+                    validClasses.stream().map(c -> new String(c.getName() + " " + c.getYear())).collect(Collectors.toList()));
+            classesCombo.setItems(items);
+        }
+    }
+
+    private void resetQuestionsList() {
+        questionsByClass = null;
+        questionsList.setItems(FXCollections.observableArrayList());
+        resetGraph();
+    }
+
+
+    private void resetGraph() {
+        chart.clear();
     }
 
 }
