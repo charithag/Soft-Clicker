@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.softclicker.server.gui.controllers.main.MainController;
 import org.softclicker.server.manage.AnswerManager;
+import org.softclicker.server.manage.ClazzManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
 
@@ -24,6 +25,7 @@ public class MainApplication extends Application {
     private AnswerManager answerManager;
     private QuestionManager questionManager;
     private UserManager userManager;
+    private ClazzManager clazzManager;
 
     @FXMLViewFlowContext
     private ViewFlowContext flowContext;
@@ -86,6 +88,14 @@ public class MainApplication extends Application {
 
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;
+    }
+
+    public ClazzManager getClazzManager() {
+        return clazzManager;
+    }
+
+    public void setClazzManager(ClazzManager clazzManager) {
+        this.clazzManager = clazzManager;
     }
 
     public static void main(String[] args) {
