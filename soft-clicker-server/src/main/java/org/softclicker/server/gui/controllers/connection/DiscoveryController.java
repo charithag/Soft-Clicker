@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import javax.annotation.PostConstruct;
 
 @FXMLController(value = "/fxml/ui/Discovery.fxml", title = "Soft Clicker")
+@Deprecated
 public class DiscoveryController {
 
     private final static Logger log = LogManager.getLogger(DiscoveryController.class);
