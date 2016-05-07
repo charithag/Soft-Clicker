@@ -54,4 +54,15 @@ public class AnswerManager {
             scopingDataSource.endConnectionScope();
         }
     }
+
+    public boolean saveAnswer(Answer answer) throws SoftClickerException {
+        try {
+            scopingDataSource.beginConnectionScope();
+            return answerDAO.saveAnswer(answer);
+        } catch (SQLException e) {
+            throw new SoftClickerException("Error while saving answer" + answer.toString(), e);
+        } finally {
+            scopingDataSource.endConnectionScope();
+        }
+    }
 }

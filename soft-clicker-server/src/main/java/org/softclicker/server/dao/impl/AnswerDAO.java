@@ -13,7 +13,7 @@ import java.util.List;
 
 public class AnswerDAO extends AbstractGenericDAO<Question> {
 
-    private final static String TABLE_NAME = "QUESTION";
+    private final static String TABLE_NAME = "ANSWER";
     private final static Logger log = Logger.getLogger(AnswerDAO.class);
 
     public AnswerDAO(ScopingDataSource scopingDataSource) {
@@ -78,6 +78,36 @@ public class AnswerDAO extends AbstractGenericDAO<Question> {
                 return answers;
             }
 
+        }
+    }
+
+    public boolean saveAnswer(Answer answer) {
+        String sql = "INSERT INTO `" + TABLE_NAME + "` (`ANSWER`, `QUESTION_ID`, `OWNER_ID`, `ANSWERED_TIME`) values (?,?,?,?)";
+        try (
+                Connection conn = scopingDataSource.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ) {
+            int count = 0;
+            stmt.setString(++count, answer.getAnswer());
+            stmt.setInt(++count, answer.getQuestion().getQuestionId());
+            if (answer.getOwner() != null) {
+                stmt.setInt(++count, answer.getOwner().getUserId());
+            } else {
+                //TODO set default ID
+                stmt.setInt(++count, 1);
+            }
+
+            stmt.setTimestamp(++count, new Timestamp(answer.getAnsweredTime().getTime()));
+
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            rs.next();
+            int id = rs.getInt(1);
+            answer.setAnswerId(id);
+            return true;
+        } catch (SQLException e) {
+            log.error("Unable to save Answer", e);
+            return false;
         }
     }
 

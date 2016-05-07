@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.Main;
 import org.softclicker.server.entity.Answer;
 import org.softclicker.server.entity.Clazz;
 import org.softclicker.server.entity.Question;
@@ -92,6 +93,11 @@ public class QuestionController extends ParentController {
 
     }
 
+    /**
+     * Count answers and update graph
+     *
+     * @param questionId
+     */
     private void loadAnswers(int questionId) {
         AnswerManager answerManager = MainApplication.getInstance().getAnswerManager();
         try {
@@ -166,5 +172,22 @@ public class QuestionController extends ParentController {
 
     private void startListeningAnswers(Question question) {
         //TODO start listening answers
+        String answerText = Answer.ANSWERS.A.toString(); // set correct value captured from http request
+        Answer answer = generateAnswer(answerText, question);
+
+        try {
+            boolean status = MainApplication.getInstance().getAnswerManager().saveAnswer(answer);
+            if (status) {
+                loadAnswers(question.getQuestionId());
+            }
+        } catch (SoftClickerException e) {
+            log.error("Error saving answer", e);
+        }
     }
+
+    private Answer generateAnswer(String answerText, Question question) {
+        return new Answer(-1, answerText, question, user, new Date());
+    }
+
 }
+

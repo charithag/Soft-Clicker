@@ -12,7 +12,7 @@ public class Answer {
         A,B,C,D,E
     }
 
-    final private int answerId;
+    private int answerId;
     final private String answer;
     final private Question question;
     final private User owner;
@@ -44,6 +44,10 @@ public class Answer {
 
     public Date getAnsweredTime() {
         return answeredTime;
+    }
+
+    public void setAnswerId(int answerId) {
+        this.answerId = answerId;
     }
 
     @Override
