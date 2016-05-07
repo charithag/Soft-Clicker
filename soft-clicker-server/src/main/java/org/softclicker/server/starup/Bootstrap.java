@@ -11,6 +11,7 @@ import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.http.ServerFactory;
 import org.softclicker.server.manage.AnswerManager;
+import org.softclicker.server.manage.ClazzManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
 
@@ -25,6 +26,7 @@ public class Bootstrap {
         UserManager userManager = new UserManager(scopingDataSource);
         QuestionManager questionManager = new QuestionManager(scopingDataSource);
         AnswerManager answerManager = new AnswerManager(scopingDataSource);
+        ClazzManager clazzManager = new ClazzManager(scopingDataSource);
         //read all users
         try {
             log.info("-----------------Users-------------------");
@@ -60,6 +62,7 @@ public class Bootstrap {
         app.setAnswerManager(answerManager);
         app.setQuestionManager(questionManager);
         app.setUserManager(userManager);
+        app.setClazzManager(clazzManager);
         app.main(args);
         log.info("SoftClicker UI Finished!");
     }

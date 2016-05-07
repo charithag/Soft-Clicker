@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
-
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -17,7 +15,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TextArea layoutX="14.0" layoutY="96.0" prefHeight="95.0" prefWidth="273.0" promptText="zdf" style="-fx-background-color: #96c3d6;" text="Question" />
+      <TextArea layoutX="14.0" layoutY="60.0" prefHeight="125.0" prefWidth="273.0" promptText="zdf" style="-fx-background-color: #96c3d6;" text="Question" />
       <Label layoutX="34.0" layoutY="204.0" text="A" />
       <TextField layoutX="46.0" layoutY="200.0" prefHeight="25.0" prefWidth="200.0" />
       <Label layoutX="34.0" layoutY="244.0" text="B" />
@@ -33,21 +31,15 @@
       <Label layoutX="34.0" layoutY="360.0" text="E" />
       <TextField layoutX="46.0" layoutY="354.0" prefHeight="25.0" prefWidth="200.0" />
       <RadioButton layoutX="257.0" layoutY="360.0" mnemonicParsing="false" />
-      <JFXButton layoutX="170.0" layoutY="392.0" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #5fa3c1;" text="Cancel">
+      <JFXButton fx:id="backButton" layoutX="170.0" layoutY="392.0" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #5fa3c1;" text="Cancel">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </JFXButton>
-      <JFXButton layoutX="48.0" layoutY="392.0" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #5fa3c1;" text="Submit">
+      <JFXButton fx:id="saveButton" layoutX="48.0" layoutY="392.0" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #5fa3c1;" text="Save">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </JFXButton>
-      <Label layoutX="12.0" layoutY="61.0" text="Quiz ID">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <ChoiceBox layoutX="85.0" layoutY="62.0" prefHeight="22.0" prefWidth="200.0" />
    </children>
 </Pane>

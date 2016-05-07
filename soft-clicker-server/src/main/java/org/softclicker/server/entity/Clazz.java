@@ -8,6 +8,11 @@ public class Clazz {
     private String name;
     private int year;
 
+    public Clazz(String name, int year) {
+        this.name = name;
+        this.year = year;
+    }
+
     public Clazz(int id, String name, int year) {
         this.id = id;
         this.name = name;
@@ -36,5 +41,14 @@ public class Clazz {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return "Clazz{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", year=" + year +
+                '}';
     }
 }

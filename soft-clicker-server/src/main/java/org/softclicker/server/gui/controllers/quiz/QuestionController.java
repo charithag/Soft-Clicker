@@ -1,20 +1,170 @@
 package org.softclicker.server.gui.controllers.quiz;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.FXMLController;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.softclicker.server.entity.Answer;
+import org.softclicker.server.entity.Clazz;
+import org.softclicker.server.entity.Question;
+import org.softclicker.server.entity.User;
+import org.softclicker.server.exception.SoftClickerException;
+import org.softclicker.server.gui.MainApplication;
+import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.gui.controllers.ParentController;
+import org.softclicker.server.manage.AnswerManager;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by chamika on 5/6/16.
  */
-@FXMLController(value = "/fxml/ui/Questions.fxml", title = "Questions")
-public class QuestionController extends ParentController{
+@FXMLController(value = "/fxml/ui/Question.fxml", title = "Questions")
+public class QuestionController extends ParentController {
+
+    private final static Logger log = LogManager.getLogger(QuestionController.class);
+
+    @FXML
+    private Pane chartPane;
+
+    @FXML
+    private JFXListView questionsList;
+
+    @FXML
+    private Label classNameLabel;
+
+    @FXML
+    private JFXButton newQuestionButton;
+
+    @FXML
+    TextField newQuestionText;
+
+    private AnswerChart chart;
+
+    private List<Clazz> validClasses;
+    private List<Question> questionsByClass;
+
+    private Clazz clazz;
+    private User user;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         super.init();
+        if (((Pane) context.getRegisteredObject("ContentPane")).getChildren().size() > 0)
+            Platform.runLater(() -> ((Pane) ((Pane) context.getRegisteredObject("ContentPane")).getChildren().get(0)).getChildren().remove(1));
+
+        chart = new AnswerChart();
+        chartPane.getChildren().add(chart);
+
+        questionsList.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            int selectedIndex = newValue.intValue();
+            if (questionsByClass.size() > selectedIndex) {
+                Question question = questionsByClass.get(selectedIndex);
+                loadAnswers(question.getQuestionId());
+                startListeningAnswers(question);
+            }
+        });
+
+        newQuestionButton.setOnAction(event -> {
+            saveQuestion(newQuestionText.getText(), clazz.getId());
+        });
+
+        user = MainApplication.getInstance().getLoggedUser();
+        clazz = (Clazz) context.getRegisteredObject("class");
+        if (clazz != null) {
+            classNameLabel.setText(clazz.getName() + " - " + clazz.getYear());
+            loadQuestions(clazz.getId());
+            startDiscovery(clazz);
+        }
 
     }
 
+    private void loadAnswers(int questionId) {
+        AnswerManager answerManager = MainApplication.getInstance().getAnswerManager();
+        try {
+            List<Answer> answersByQuestionId = answerManager.getAnswersByQuestionId(questionId);
+            log.info("answer count=" + answersByQuestionId.size());
+            HashMap<String, Integer> answersCount = new HashMap<>();
+            for (Answer answer : answersByQuestionId) {
+                Integer count = answersCount.get(answer.getAnswer());
+                if (count == null) {
+                    count = 1;
+                } else {
+                    ++count;
+                }
+                answersCount.put(answer.getAnswer(), count);
+            }
+            resetGraph();
+            answersCount.forEach((s, integer) -> chart.updateData(s, integer));
+            log.info("answers= " + answersCount);
+        } catch (SoftClickerException e) {
+            log.error("Unable to load answers", e);
+        }
+    }
+
+    private void saveQuestion(String questionText, int classID) {
+        Question question = new Question(-1, questionText, Answer.ANSWERS.A.name(), user, new Date(), new Date(), classID);
+        boolean status = MainApplication.getInstance().getQuestionManager().saveQuestion(question);
+        if (status) {
+            loadQuestions(classID);
+            log.info("question saved. " + question.toString());
+        }
+    }
+
+    /**
+     * Load and show questions for the class name
+     *
+     * @param classID
+     */
+    private void loadQuestions(int classID) {
+        //load all questions for a class Name
+        resetQuestionsList();
+        try {
+            questionsByClass = MainApplication.getInstance().getQuestionManager().getQuestionsByClassID(classID);
+            if (questionsByClass != null && !questionsByClass.isEmpty()) {
+                ObservableList<String> items = FXCollections.observableArrayList(
+                        questionsByClass.stream().map(Question::getQuestion).collect(Collectors.toList()));
+                questionsList.setItems(items);
+            }
+        } catch (SoftClickerException e) {
+            log.error("Unable to questions", e);
+        }
+
+    }
+
+    private void resetQuestionsList() {
+        questionsByClass = null;
+        questionsList.setItems(FXCollections.observableArrayList());
+        resetGraph();
+    }
+
+
+    private void resetGraph() {
+        chart.clear();
+    }
+
+    private void startDiscovery(Clazz clazz) {
+        //TODO start discovery service in a separate thread
+    }
+
+    private void stopDiscovery() {
+        //TODO stop discovery
+    }
+
+    private void startListeningAnswers(Question question) {
+        //TODO start listening answers
+    }
 }

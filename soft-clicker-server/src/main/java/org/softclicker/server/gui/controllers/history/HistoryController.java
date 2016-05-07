@@ -57,7 +57,7 @@ public class HistoryController extends ParentController{
         classesCombo.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             int selectedIndex = newValue.intValue();
             if (validClasses.size() > selectedIndex) {
-                loadQuestions(validClasses.get(selectedIndex).getName());
+                loadQuestions(validClasses.get(selectedIndex).getId());
             }
         });
 
@@ -100,13 +100,13 @@ public class HistoryController extends ParentController{
 
     /**
      * Load and show questions for the class name
-     * @param className
+     * @param classID
      */
-    private void loadQuestions(String className) {
+    private void loadQuestions(int classID) {
         //load all questions for a class Name
         resetQuestionsList();
         try {
-            questionsByClass = MainApplication.getInstance().getQuestionManager().getQuestionsByClass(className);
+            questionsByClass = MainApplication.getInstance().getQuestionManager().getQuestionsByClassID(classID);
             if (questionsByClass != null && !questionsByClass.isEmpty()) {
                 ObservableList<String> items = FXCollections.observableArrayList(
                         questionsByClass.stream().map(Question::getQuestion).collect(Collectors.toList()));

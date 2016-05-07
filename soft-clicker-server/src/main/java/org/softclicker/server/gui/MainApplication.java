@@ -9,8 +9,13 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.softclicker.server.entity.User;
+import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.controllers.main.MainController;
 import org.softclicker.server.manage.AnswerManager;
+import org.softclicker.server.manage.ClazzManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
 
@@ -19,11 +24,14 @@ import org.softclicker.server.manage.UserManager;
  */
 public class MainApplication extends Application {
 
+    private final static Logger log = LogManager.getLogger(MainApplication.class);
+
     private static MainApplication instance;
 
     private AnswerManager answerManager;
     private QuestionManager questionManager;
     private UserManager userManager;
+    private ClazzManager clazzManager;
 
     @FXMLViewFlowContext
     private ViewFlowContext flowContext;
@@ -64,6 +72,16 @@ public class MainApplication extends Application {
 
     }
 
+    public User getLoggedUser()
+    {
+        try {
+            return  userManager.getAllUsers().get(0);
+        } catch (SoftClickerException e) {
+            log.error("Logged User not found",e);
+            return null;
+        }
+    }
+
     public AnswerManager getAnswerManager() {
         return answerManager;
     }
@@ -86,6 +104,14 @@ public class MainApplication extends Application {
 
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;
+    }
+
+    public ClazzManager getClazzManager() {
+        return clazzManager;
+    }
+
+    public void setClazzManager(ClazzManager clazzManager) {
+        this.clazzManager = clazzManager;
     }
 
     public static void main(String[] args) {

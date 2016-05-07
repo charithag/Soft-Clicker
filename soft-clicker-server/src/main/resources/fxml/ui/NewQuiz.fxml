@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.validation.RequiredFieldValidator?>
+<?import de.jensd.fx.fontawesome.Icon?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="root" maxHeight="500.0" maxWidth="700.0" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="14.0" layoutY="14.0" text="Create New Quiz" textFill="#802f31">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <JFXButton layoutX="172.0" layoutY="392.0" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #5fa3c1;" text="Cancel">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </JFXButton>
-      <JFXButton layoutX="50.0" layoutY="392.0" prefHeight="30.0" prefWidth="78.0" style="-fx-background-color: #5fa3c1;" text="Submit">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </JFXButton>
-      <Label layoutX="26.0" layoutY="66.0" text="Class Name">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="26.0" layoutY="119.0" text="Quiz ID">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="26.0" layoutY="172.0" text="Quiz Name">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <ChoiceBox layoutX="125.0" layoutY="67.0" prefWidth="150.0" />
-      <TextField layoutX="126.0" layoutY="120.0" />
-      <TextField layoutX="126.0" layoutY="173.0" />
+      <VBox prefWidth="300" spacing="40" maxWidth="400" alignment="CENTER">
+         <children>
+            <Label text="Create New Quiz" textFill="#802f31">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <JFXTextField id="classNameText" promptText="Class Name" labelFloat="true">
+               <validators>
+                  <RequiredFieldValidator message="Class name Required!">
+                     <Icon awesomeIcon="WARNING" style="-fx-font-family: FontAwesome;" />
+                  </RequiredFieldValidator>
+               </validators>
+            </JFXTextField>
+            <JFXTextField id="classYearText" promptText="Class Year" labelFloat="true">
+               <validators>
+                  <RequiredFieldValidator message="Class name Required!">
+                     <Icon awesomeIcon="WARNING" style="-fx-font-family: FontAwesome;" />
+                  </RequiredFieldValidator>
+               </validators>
+            </JFXTextField>
+            <JFXButton fx:id="submitButton" buttonType="RAISED" prefHeight="40" prefWidth="100" style="-fx-text-fill:WHITE;-fx-background-color:#5264AE;-fx-font-size:14px;" text="Submit" />
+         </children>
+      </VBox>
    </children>
-</Pane>
+</StackPane>

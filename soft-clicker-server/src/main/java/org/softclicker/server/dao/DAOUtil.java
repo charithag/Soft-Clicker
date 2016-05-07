@@ -45,7 +45,8 @@ public final class DAOUtil {
         String answer = rs.getString(columnPrefix + "CORRECT_ANSWER");
         Date createdTime = rs.getTimestamp(columnPrefix + "CREATED_TIME");
         Date expireTime = rs.getTimestamp(columnPrefix + "EXPIRE_TIME");
-        return new Question(questionId, question, answer, owner, createdTime, expireTime);
+        int classID = rs.getInt(columnPrefix + "CLASS_ID");
+        return new Question(questionId, question, answer, owner, createdTime, expireTime,classID);
     }
 
     public static Question loadQuestion(ResultSet rs, User owner) throws SQLException {
