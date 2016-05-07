@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.chainsaw.Main;
 import org.softclicker.server.entity.Answer;
 import org.softclicker.server.entity.Clazz;
 import org.softclicker.server.entity.Question;
@@ -22,9 +21,9 @@ import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.gui.controllers.ParentController;
 import org.softclicker.server.manage.AnswerManager;
+import org.softclicker.server.transport.ServerFactory;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  * Created by chamika on 5/6/16.
  */
 @FXMLController(value = "/fxml/ui/Question.fxml", title = "Questions")
-public class QuestionController extends ParentController {
+public class QuestionController extends ParentController implements AnswerListener {
 
     private final static Logger log = LogManager.getLogger(QuestionController.class);
 
@@ -172,22 +171,18 @@ public class QuestionController extends ParentController {
 
     private void startListeningAnswers(Question question) {
         //TODO start listening answers
-        String answerText = Answer.ANSWERS.A.toString(); // set correct value captured from http request
-        Answer answer = generateAnswer(answerText, question);
+        ServerFactory.createTCPServer(question, this);
+        log.info("Server started listening answers for question '" + question.getQuestion() + "'");
+    }
 
-        try {
-            boolean status = MainApplication.getInstance().getAnswerManager().saveAnswer(answer);
-            if (status) {
-                loadAnswers(question.getQuestionId());
-            }
-        } catch (SoftClickerException e) {
-            log.error("Error saving answer", e);
+    @Override
+    public void answerReceived(Answer answer) throws SoftClickerException {
+        boolean status = MainApplication.getInstance().getAnswerManager().saveAnswer(answer);
+        if (status) {
+            loadAnswers(answer.getQuestion().getQuestionId());
         }
+        throw new SoftClickerException("Error on saving answer with id '" + answer.getAnswerId() +
+                "' for the question id '" + answer.getQuestion().getQuestionId());
     }
-
-    private Answer generateAnswer(String answerText, Question question) {
-        return new Answer(-1, answerText, question, user, new Date());
-    }
-
 }
 

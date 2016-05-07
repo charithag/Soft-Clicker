@@ -9,11 +9,11 @@ import org.softclicker.server.entity.Question;
 import org.softclicker.server.entity.User;
 import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.MainApplication;
-import org.softclicker.server.http.ServerFactory;
 import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.manage.ClazzManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
+import org.softclicker.server.transport.ServerFactory;
 
 public class Bootstrap {
 
@@ -56,7 +56,9 @@ public class Bootstrap {
         }
 //        questionManager.getQuestionsByClass("NETWORKING");
         log.info("SoftClicker Server Started!");
-        ServerFactory.createServer();
+        ServerFactory.createUDPServer();
+        log.info("SoftClicker Server started broadcasting.");
+
         // Start UI application
         MainApplication app = MainApplication.getInstance();
         app.setAnswerManager(answerManager);
