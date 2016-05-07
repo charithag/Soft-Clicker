@@ -1,85 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:weightSum="1">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <TextView
-            android:id="@+id/student_id_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:id="@+id/student_id_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/txt_answer"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/txt_answer"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/answerGroup"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        android:id="@+id/answerGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
 
         <RadioButton
-                android:id="@+id/answer1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="OPTION_1"
-                android:text="@string/txt_option_1"/>
+            android:id="@+id/answer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="OPTION_1"
+            android:text="@string/txt_option_1"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <RadioButton
-                android:id="@+id/answer2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="OPTION_2"
-                android:text="@string/txt_option_2"/>
+            android:id="@+id/answer2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="OPTION_2"
+            android:text="@string/txt_option_2"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <RadioButton
-                android:id="@+id/answer3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="OPTION_3"
-                android:text="@string/txt_option_3"/>
+            android:id="@+id/answer3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="OPTION_3"
+            android:text="@string/txt_option_3"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <RadioButton
-                android:id="@+id/answer4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="OPTION_4"
-                android:text="@string/txt_option_4"/>
+            android:id="@+id/answer4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="OPTION_4"
+            android:text="@string/txt_option_4"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <RadioButton
-                android:id="@+id/answer5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="OPTION_5"
-                android:text="@string/txt_option_5"/>
+            android:id="@+id/answer5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="OPTION_5"
+            android:text="@string/txt_option_5"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
     </RadioGroup>
 
     <Button
-            android:id="@+id/button_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/txt_submit"/>
+        android:id="@+id/button_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/txt_submit" />
 
     <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.99"/>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.99" />
 
     <TextView
-            android:id="@+id/class_status_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/txt_status"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:id="@+id/class_status_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/txt_status"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

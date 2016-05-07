@@ -404,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
                     String selectedStudent = sharedPref.getString(Constants.SELECTED_STUDENT, null);
                     TextView studentId = (TextView) findViewById(R.id.student_id_label);
                     if (selectedStudent != null && studentId != null) {
-                        studentId.setText(selectedStudent);
+                        studentId.setText("Welcome " + selectedStudent);
                         Toast.makeText(MainActivity.this, selectedStudent + " is selected", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(MainActivity.this, "You need to select a student first", Toast.LENGTH_SHORT).show();
