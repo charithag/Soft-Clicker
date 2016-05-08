@@ -19,25 +19,18 @@ import java.util.Date;
 
 public class TCPServer implements Server {
 
-    private final Question listeningQuestion;
-    private final AnswerListener answerListener;
     private volatile Thread serverThread;
 
-
-    public TCPServer(int port, Question listeningQuestion, AnswerListener answerListener) {
-        this.listeningQuestion = listeningQuestion;
-        this.answerListener = answerListener;
-        this.serverThread = new Thread(){
-
+    public TCPServer(int port, Question listeningQuestion, AnswerListener answerListener) throws SoftClickerException {
+        ServerSocket serverSocket;
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            throw new SoftClickerException("Cannot create TCP socket.");
+        }
+        this.serverThread = new Thread() {
             @Override
             public void run() {
-                ServerSocket serverSocket;
-                try {
-                    serverSocket = new ServerSocket(port);
-                } catch (IOException e) {
-                    throw new SoftClickerRuntimeException("Cannot create TCP socket.");
-                }
-
                 while (true) {
                     try {
                         Socket connectionSocket = serverSocket.accept();

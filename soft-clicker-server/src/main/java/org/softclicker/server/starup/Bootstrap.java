@@ -1,5 +1,6 @@
 package org.softclicker.server.starup;
 
+import de.jensd.fx.fontawesome.test.App;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.config.ServerConfigManager;
@@ -13,7 +14,6 @@ import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.manage.ClazzManager;
 import org.softclicker.server.manage.QuestionManager;
 import org.softclicker.server.manage.UserManager;
-import org.softclicker.server.transport.ServerFactory;
 
 public class Bootstrap {
 
@@ -62,7 +62,7 @@ public class Bootstrap {
         app.setQuestionManager(questionManager);
         app.setUserManager(userManager);
         app.setClazzManager(clazzManager);
-        app.main(args);
+        App.main(args);
         log.info("SoftClicker UI Finished!");
     }
 }

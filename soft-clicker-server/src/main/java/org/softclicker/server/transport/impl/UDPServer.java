@@ -21,20 +21,20 @@ public class UDPServer implements Server {
     private final static org.apache.log4j.Logger log = LogManager.getLogger(UDPServer.class);
     private volatile Thread serverThread;
 
-    public UDPServer(int port, SoftClickBroadcast broadcastMsg) {
+    public UDPServer(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
+        DatagramSocket socket;
+        InetSocketAddress destination;
+        try {
+            //Keep a socket open to listen to all the UDP traffic that is destined for this port
+            socket = new DatagramSocket(port);
+            socket.setBroadcast(true);
+            destination = new InetSocketAddress(InetAddress.getByName(TransportUtils.getBroadcast().toString().substring(1)), port);
+        } catch (IOException e) {
+            throw new SoftClickerException("Cannot create socket for server broadcasting.", e);
+        }
         this.serverThread = new Thread() {
             @Override
             public void run() {
-                DatagramSocket socket;
-                InetSocketAddress destination;
-                try {
-                    //Keep a socket open to listen to all the UDP traffic that is destined for this port
-                    socket = new DatagramSocket(port);
-                    socket.setBroadcast(true);
-                    destination = new InetSocketAddress(InetAddress.getByName(TransportUtils.getBroadcast().toString().substring(1)), port);
-                } catch (IOException | SoftClickerException e) {
-                    throw new SoftClickerRuntimeException("Cannot create socket for server broadcasting.", e);
-                }
                 while (true) {
                     try {
                         MessageHandler messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(),
@@ -60,6 +60,7 @@ public class UDPServer implements Server {
 
     @Override
     public void stop() {
+        this.serverThread.interrupt();
         this.serverThread = null;
     }
 

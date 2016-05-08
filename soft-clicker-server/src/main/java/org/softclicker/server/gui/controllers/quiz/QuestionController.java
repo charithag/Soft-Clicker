@@ -176,8 +176,12 @@ public class QuestionController extends ParentController implements AnswerListen
     }
 
     private void startListeningAnswers(Question question) {
-        ServerFactory.createListeningServer(question, this);
-        log.info("Server started listening answers for question '" + question.getQuestion() + "'");
+        try {
+            ServerFactory.createListeningServer(question, this);
+        } catch (SoftClickerException e) {
+            log.error("Cannot start listening server for question '" + question + "'");
+        }
+        log.info("Server started listening answers for question '" + question + "'");
     }
 
     @Override
