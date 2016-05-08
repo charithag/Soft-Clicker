@@ -10,9 +10,8 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-public class TransportUtils {
+public class HandlerUtils {
 
-    private final static org.apache.log4j.Logger log = LogManager.getLogger(TransportUtils.class);
     public static final int UDP_SERVER_PORT_NUM = 10100;
     public static final int TCP_SERVER_PORT_NUM = 6789;
 

@@ -19,12 +19,12 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-public class TCPServerHandler implements ServerHandler {
+public class ListeningHandler implements ServerHandler {
 
     private volatile Thread serverThread;
-    private static final Logger log = Logger.getLogger(TCPServerHandler.class);
+    private static final Logger log = Logger.getLogger(ListeningHandler.class);
 
-    public TCPServerHandler(int port, Question listeningQuestion, AnswerListener answerListener) throws SoftClickerException {
+    public ListeningHandler(int port, Question listeningQuestion, AnswerListener answerListener) throws SoftClickerException {
         ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(port);
@@ -90,6 +90,6 @@ public class TCPServerHandler implements ServerHandler {
 
     @Override
     public boolean isRunning() {
-        return false;
+        return this.serverThread.isAlive();
     }
 }

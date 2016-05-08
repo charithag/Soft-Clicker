@@ -6,7 +6,7 @@ import org.softclicker.message.dao.impl.SoftClickBroadcastDAOImpl;
 import org.softclicker.message.dto.SoftClickBroadcast;
 import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.handler.ServerHandler;
-import org.softclicker.server.handler.TransportUtils;
+import org.softclicker.server.handler.HandlerUtils;
 import org.softclicker.transport.handler.MessageHandler;
 
 import java.io.IOException;
@@ -15,19 +15,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-public class UDPServerHandler implements ServerHandler {
+public class BroadcastingHandler implements ServerHandler {
 
-    private final static org.apache.log4j.Logger log = LogManager.getLogger(UDPServerHandler.class);
+    private final static org.apache.log4j.Logger log = LogManager.getLogger(BroadcastingHandler.class);
     private volatile Thread serverThread;
 
-    public UDPServerHandler(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
+    public BroadcastingHandler(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
         DatagramSocket socket;
         InetSocketAddress destination;
         try {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
             socket = new DatagramSocket(port);
             socket.setBroadcast(true);
-            destination = new InetSocketAddress(InetAddress.getByName(TransportUtils.getBroadcast().toString().substring(1)), port);
+            destination = new InetSocketAddress(InetAddress.getByName(HandlerUtils.getBroadcast().toString().substring(1)), port);
         } catch (IOException e) {
             throw new SoftClickerException("Cannot create socket for server broadcasting.", e);
         }
@@ -65,6 +65,6 @@ public class UDPServerHandler implements ServerHandler {
 
     @Override
     public boolean isRunning() {
-        return false;
+        return this.serverThread.isAlive();
     }
 }

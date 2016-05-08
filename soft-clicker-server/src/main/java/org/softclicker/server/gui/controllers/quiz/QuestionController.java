@@ -22,7 +22,7 @@ import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.gui.controllers.ParentController;
 import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.handler.ServerHandler;
-import org.softclicker.server.handler.ServerFactory;
+import org.softclicker.server.handler.ServerHandlerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -165,7 +165,7 @@ public class QuestionController extends ParentController implements AnswerListen
 
     private void startDiscovery(Clazz clazz) {
         try {
-            this.broadCastingServer = ServerFactory.createBroadcastingServer();
+            this.broadCastingServer = ServerHandlerFactory.createBroadcastingHandler();
         } catch (SoftClickerException e) {
             log.error("Cannot create broadcasting server", e);
         }
@@ -177,7 +177,7 @@ public class QuestionController extends ParentController implements AnswerListen
 
     private void startListeningAnswers(Question question) {
         try {
-            ServerFactory.createListeningServer(question, this);
+            ServerHandlerFactory.createListeningHandler(question, this);
         } catch (SoftClickerException e) {
             log.error("Cannot start listening server for question '" + question + "'");
         }
