@@ -36,7 +36,7 @@ import java.util.function.Function;
 /**
  * A {@link FlowContainer} that supports animation for the view change.
  */
-public class AnimatedFlowContainer extends io.datafx.controller.flow.container.AnimatedFlowContainer implements FlowContainer<StackPane> {
+public class AnimatedUIFlowContainer extends io.datafx.controller.flow.container.AnimatedFlowContainer implements FlowContainer<StackPane> {
 
     private StackPane root;
     private Duration duration;
@@ -47,7 +47,7 @@ public class AnimatedFlowContainer extends io.datafx.controller.flow.container.A
     /**
      * Defaults constructor that creates a container with a fade animation that last 320 ms.
      */
-    public AnimatedFlowContainer() {
+    public AnimatedUIFlowContainer() {
         this(Duration.millis(320));
     }
 
@@ -56,7 +56,7 @@ public class AnimatedFlowContainer extends io.datafx.controller.flow.container.A
      *
      * @param duration the duration of the animation
      */
-    public AnimatedFlowContainer(Duration duration) {
+    public AnimatedUIFlowContainer(Duration duration) {
         this(duration, ContainerAnimations.FADE);
     }
 
@@ -66,7 +66,7 @@ public class AnimatedFlowContainer extends io.datafx.controller.flow.container.A
      * @param duration the duration of the animation
      * @param animation the animation type
      */
-    public AnimatedFlowContainer(Duration duration, ContainerAnimations animation) {
+    public AnimatedUIFlowContainer(Duration duration, ContainerAnimations animation) {
         this(duration, animation.getAnimationProducer());
     }
 
@@ -75,7 +75,7 @@ public class AnimatedFlowContainer extends io.datafx.controller.flow.container.A
      * @param duration  the duration of the animation
      * @param animationProducer   the {@link KeyFrame} instances that define the animation
      */
-    public AnimatedFlowContainer(Duration duration, Function<io.datafx.controller.flow.container.AnimatedFlowContainer, List<KeyFrame>> animationProducer) {
+    public AnimatedUIFlowContainer(Duration duration, Function<io.datafx.controller.flow.container.AnimatedFlowContainer, List<KeyFrame>> animationProducer) {
         this.root = new StackPane();
         this.duration = duration;
         this.animationProducer = animationProducer;

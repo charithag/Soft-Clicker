@@ -17,7 +17,7 @@ import java.util.HashMap;
  */
 public class AnswerChart extends BarChart<Number, String> {
 
-    private final String ANSWERS = " Answers";
+    private static final String ANSWERS = " Answers";
 
     private XYChart.Series<Number, String> series;
     private String questionName;

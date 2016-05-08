@@ -23,7 +23,7 @@ public class Answer {
         this.answer = answer;
         this.question = question;
         this.owner = owner;
-        this.answeredTime = answeredTime;
+        this.answeredTime = (Date)answeredTime.clone();
     }
 
     public int getAnswerId() {
@@ -43,7 +43,7 @@ public class Answer {
     }
 
     public Date getAnsweredTime() {
-        return answeredTime;
+        return (Date)answeredTime.clone();
     }
 
     public void setAnswerId(int answerId) {

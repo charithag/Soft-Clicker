@@ -1,6 +1,6 @@
-package org.softclicker.server.transport;
+package org.softclicker.server.handler;
 
-public interface Server {
+public interface ServerHandler {
     /**
      * Starts the server.
      */

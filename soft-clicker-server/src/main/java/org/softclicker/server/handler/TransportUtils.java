@@ -1,4 +1,4 @@
-package org.softclicker.server.transport;
+package org.softclicker.server.handler;
 
 import org.apache.log4j.LogManager;
 import org.softclicker.server.exception.SoftClickerException;

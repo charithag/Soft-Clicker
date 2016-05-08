@@ -8,7 +8,12 @@ import org.softclicker.server.exception.SoftClickerRuntimeException;
 import org.softclicker.server.exception.UnsupportedDatabaseEngineException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +21,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * Usage:
@@ -79,7 +86,8 @@ public class DatabaseCreator {
                 Connection conn = scopingDataSource.getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(checkSQL)) {
-            return (rs != null);
+            rs.next();
+            return true;
         } catch (SQLException e) {
             return false;
         }
@@ -95,14 +103,18 @@ public class DatabaseCreator {
     }
 
     private int executeSQLScript(Path sqlScript) throws IOException, SQLException {
-        String sql = new String(Files.readAllBytes(sqlScript));
         try (
                 Connection conn = scopingDataSource.getConnection();
                 Statement stmt = conn.createStatement();
         ) {
-            int rv = stmt.executeUpdate(sql);
+            Iterator<String> iterator = Files.readAllLines(sqlScript, StandardCharsets.UTF_8).stream().iterator();
+            int rowCount = 0;
+            while (iterator.hasNext()){
+                String sql = iterator.next();
+                rowCount += stmt.executeUpdate(sql);
+            }
             conn.commit();
-            return rv;
+            return rowCount;
         }
     }
 }

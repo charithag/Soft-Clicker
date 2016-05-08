@@ -21,8 +21,8 @@ import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.gui.controllers.ParentController;
 import org.softclicker.server.manage.AnswerManager;
-import org.softclicker.server.transport.Server;
-import org.softclicker.server.transport.ServerFactory;
+import org.softclicker.server.handler.ServerHandler;
+import org.softclicker.server.handler.ServerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -60,7 +60,7 @@ public class QuestionController extends ParentController implements AnswerListen
 
     private Clazz clazz;
     private User user;
-    private Server broadCastingServer;
+    private ServerHandler broadCastingServer;
 
     @PostConstruct
     public void init() {

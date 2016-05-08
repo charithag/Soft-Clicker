@@ -1,13 +1,12 @@
-package org.softclicker.server.transport.impl;
+package org.softclicker.server.handler.impl;
 
 import org.apache.log4j.LogManager;
 import org.softclicker.message.dao.impl.SoftClickAnswerDAOImpl;
 import org.softclicker.message.dao.impl.SoftClickBroadcastDAOImpl;
 import org.softclicker.message.dto.SoftClickBroadcast;
 import org.softclicker.server.exception.SoftClickerException;
-import org.softclicker.server.exception.SoftClickerRuntimeException;
-import org.softclicker.server.transport.Server;
-import org.softclicker.server.transport.TransportUtils;
+import org.softclicker.server.handler.ServerHandler;
+import org.softclicker.server.handler.TransportUtils;
 import org.softclicker.transport.handler.MessageHandler;
 
 import java.io.IOException;
@@ -16,12 +15,12 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-public class UDPServer implements Server {
+public class UDPServerHandler implements ServerHandler {
 
-    private final static org.apache.log4j.Logger log = LogManager.getLogger(UDPServer.class);
+    private final static org.apache.log4j.Logger log = LogManager.getLogger(UDPServerHandler.class);
     private volatile Thread serverThread;
 
-    public UDPServer(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
+    public UDPServerHandler(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
         DatagramSocket socket;
         InetSocketAddress destination;
         try {
