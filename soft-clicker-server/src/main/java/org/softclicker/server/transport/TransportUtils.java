@@ -13,10 +13,10 @@ import java.util.Iterator;
 public class TransportUtils {
 
     private final static org.apache.log4j.Logger log = LogManager.getLogger(TransportUtils.class);
-    public static final int SOFTCLICKER_UDP_PORT_NUM = 10100;
-    public static final int SOFTCLICKER_TCP_PORT_NUM = 6789;
+    public static final int UDP_SERVER_PORT_NUM = 10100;
+    public static final int TCP_SERVER_PORT_NUM = 6789;
 
-    private static InterfaceAddress getLocalHost() throws SoftClickerException {
+    public static InterfaceAddress getLocalHost() throws SoftClickerException {
         System.setProperty("java.net.preferIPv4Stack", "true");
         try {
             Enumeration list = NetworkInterface.getNetworkInterfaces();

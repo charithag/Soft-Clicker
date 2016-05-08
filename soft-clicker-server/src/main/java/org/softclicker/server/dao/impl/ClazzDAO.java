@@ -55,7 +55,6 @@ public class ClazzDAO extends AbstractGenericDAO<Clazz> {
             ResultSet rs = stmt.getGeneratedKeys();
             rs.next();
             int clazzId = rs.getInt(1);
-            clazz.setId(clazzId);
             return true;
         } catch (SQLException e) {
             log.error("Unable to save Class details", e);

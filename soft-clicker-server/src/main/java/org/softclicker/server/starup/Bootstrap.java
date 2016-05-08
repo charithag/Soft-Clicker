@@ -56,9 +56,6 @@ public class Bootstrap {
         }
 //        questionManager.getQuestionsByClass("NETWORKING");
         log.info("SoftClicker Server Started!");
-        ServerFactory.createUDPServer();
-        log.info("SoftClicker Server started broadcasting.");
-
         // Start UI application
         MainApplication app = MainApplication.getInstance();
         app.setAnswerManager(answerManager);
