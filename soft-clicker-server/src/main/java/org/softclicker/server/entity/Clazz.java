@@ -28,6 +28,10 @@ public class Clazz {
         return year;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "Clazz{" +
