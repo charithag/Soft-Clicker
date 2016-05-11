@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -508,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     byte[] recvBuf = new byte[15000];
                     if (socket == null || socket.isClosed()) {
-                        socket = new DatagramSocket(Constants.BORADCAST_PORT, getBroadcastAddress());
+                        socket = new MulticastSocket(Constants.BORADCAST_PORT);
                         socket.setBroadcast(true);
                     }
                     socket.setSoTimeout(10000);

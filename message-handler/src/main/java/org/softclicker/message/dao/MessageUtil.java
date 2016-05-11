@@ -6,8 +6,8 @@ public class MessageUtil {
 
     public static byte[] getMessageFromBytes(byte[] received) {
         int length;
-
-        for (length = 0; length < received.length; length++) {
+        //length should be started from 13 to by pass 0x00 in IP address
+        for (length = 13; length < received.length; length++) {
             if (received[length] == 0x00) {
                 break;
             }

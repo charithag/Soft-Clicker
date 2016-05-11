@@ -10,10 +10,7 @@ import org.softclicker.server.handler.HandlerUtils;
 import org.softclicker.transport.handler.MessageHandler;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.net.*;
 
 public class BroadcastingHandler implements ServerHandler {
 
@@ -21,11 +18,11 @@ public class BroadcastingHandler implements ServerHandler {
     private volatile Thread serverThread;
 
     public BroadcastingHandler(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
-        DatagramSocket socket;
+        MulticastSocket socket;
         InetSocketAddress destination;
         try {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
-            socket = new DatagramSocket(port);
+            socket = new MulticastSocket(port);
             socket.setBroadcast(true);
             destination = new InetSocketAddress(InetAddress.getByName(HandlerUtils.getBroadcast().toString().substring(1)), port);
         } catch (IOException e) {
@@ -41,7 +38,8 @@ public class BroadcastingHandler implements ServerHandler {
                         byte[] message = messageHandler.encodeBroadcast(broadcastMsg);
                         DatagramPacket sendPacket = new DatagramPacket(message, message.length, destination);
                         socket.send(sendPacket);
-                        Thread.sleep(5000);
+                        log.info(new String(sendPacket.getData()));
+                        Thread.sleep(2000);
                     } catch (IOException e) {
                         log.error("Error while broadcasting message", e);
                     } catch (InterruptedException e) {
