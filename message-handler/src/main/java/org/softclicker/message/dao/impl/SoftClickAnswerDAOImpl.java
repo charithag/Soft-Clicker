@@ -1,5 +1,6 @@
 package org.softclicker.message.dao.impl;
 
+import org.softclicker.message.dao.MessageUtil;
 import org.softclicker.message.dao.SoftClickAnswerDAO;
 import org.softclicker.message.dto.SoftClickAnswer;
 
@@ -31,7 +32,10 @@ public class SoftClickAnswerDAOImpl implements SoftClickAnswerDAO {
         return message;
     }
 
-    public SoftClickAnswer decodeMessage(byte[] message) {
+    public SoftClickAnswer decodeMessage(byte[] received) {
+
+        byte[] message = MessageUtil.getMessageFromBytes(received);
+
         SoftClickAnswer softClickAnswer = new SoftClickAnswer();
 
         int index = 0;

@@ -520,14 +520,21 @@ public class MainActivity extends AppCompatActivity {
                     String message = new String(packet.getData()).trim();
                     Log.i("UDP", "Got UDB broadcast from " + senderIP + ", message: " + message);
 
-                    SoftClickBroadcast softClickBroadcast = messageHandler.decodeBroadcast(packet.getData());
+                    final SoftClickBroadcast softClickBroadcast = messageHandler.decodeBroadcast(packet.getData());
+                    socket.close();
+
                     SharedPreferences.Editor prefEditor = sharedPref.edit();
                     prefEditor.putString(Constants.SERVER_IP, softClickBroadcast.getServerIP().getHostAddress());
                     prefEditor.putString(Constants.SERVER_NAME, softClickBroadcast.getServerName());
                     prefEditor.putInt(Constants.SERVER_PORT, softClickBroadcast.getPort());
                     prefEditor.apply();
 
-                    socket.close();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Connected with : " + softClickBroadcast.getServerName(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } catch (Exception e) {
                     mHandler.post(new Runnable() {
                         @Override
