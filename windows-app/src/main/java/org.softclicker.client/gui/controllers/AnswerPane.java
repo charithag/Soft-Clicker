@@ -87,6 +87,7 @@ public class AnswerPane {
         radioButton3.setToggleGroup(group);
         radioButton4.setToggleGroup(group);
 
+        //This is for changing the student id in the answer panel
         changeIdButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
