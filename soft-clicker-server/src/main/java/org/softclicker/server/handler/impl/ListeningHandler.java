@@ -27,9 +27,10 @@ public class ListeningHandler implements ServerHandler {
 
     private volatile Thread serverThread;
     private static final Logger log = Logger.getLogger(ListeningHandler.class);
-
+    ServerSocket serverSocket;
+    private boolean stopped = false;
     public ListeningHandler(int port, Question listeningQuestion, AnswerListener answerListener) throws SoftClickerException {
-        ServerSocket serverSocket;
+
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -38,7 +39,7 @@ public class ListeningHandler implements ServerHandler {
         this.serverThread = new Thread() {
             @Override
             public void run() {
-                while (true) {
+                while (true && !stopped) {
                     try (
                             Socket connectionSocket = serverSocket.accept();
                             BufferedReader receivedMsg = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream(), StandardCharsets.UTF_8));
@@ -67,6 +68,7 @@ public class ListeningHandler implements ServerHandler {
                             log.error("Cannot send response.", e);
                         }
                     } catch (IOException e) {
+                        if(!stopped)
                         throw new SoftClickerRuntimeException("Cannot create socket.", e);
                     }
                 }
@@ -93,6 +95,15 @@ public class ListeningHandler implements ServerHandler {
 
     @Override
     public void stop() {
+        if(serverSocket != null)
+        {
+            try {
+                stopped = true;
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.serverThread = null;
     }
 

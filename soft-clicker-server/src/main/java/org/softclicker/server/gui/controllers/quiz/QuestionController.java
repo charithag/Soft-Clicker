@@ -2,6 +2,7 @@ package org.softclicker.server.gui.controllers.quiz;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSnackbar;
 import io.datafx.controller.FXMLController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -10,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.softclicker.server.entity.Answer;
@@ -25,6 +27,7 @@ import org.softclicker.server.handler.ServerHandler;
 import org.softclicker.server.handler.ServerHandlerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,8 @@ import java.util.stream.Collectors;
 public class QuestionController extends ParentController implements AnswerListener {
 
     private final static Logger log = LogManager.getLogger(QuestionController.class);
+
+    @FXML private StackPane root;
 
     @FXML
     private Pane chartPane;
@@ -53,6 +58,9 @@ public class QuestionController extends ParentController implements AnswerListen
     @FXML
     TextField newQuestionText;
 
+    @FXML
+    JFXSnackbar snackbar;
+
     private AnswerChart chart;
 
     private List<Clazz> validClasses;
@@ -61,6 +69,7 @@ public class QuestionController extends ParentController implements AnswerListen
     private Clazz clazz;
     private User user;
     private ServerHandler broadCastingServer;
+    private ServerHandler listeningHandler;
 
     @PostConstruct
     public void init() {
@@ -71,17 +80,28 @@ public class QuestionController extends ParentController implements AnswerListen
         chart = new AnswerChart();
         chartPane.getChildren().add(chart);
 
+        snackbar.registerSnackbarContainer(root);
+
         questionsList.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             int selectedIndex = newValue.intValue();
-            if (questionsByClass.size() > selectedIndex) {
+            if (questionsByClass != null && questionsByClass.size() > selectedIndex) {
                 Question question = questionsByClass.get(selectedIndex);
                 loadAnswers(question.getQuestionId());
+                if(listeningHandler != null){
+                    listeningHandler.stop();
+                }
                 startListeningAnswers(question);
             }
         });
 
         newQuestionButton.setOnAction(event -> {
-            saveQuestion(newQuestionText.getText(), clazz.getId());
+            if(newQuestionText.getText().trim().length() == 0)
+            {
+                snackbar.fireEvent(new JFXSnackbar.SnackbarEvent("Enter question text"));
+            }else {
+                saveQuestion(newQuestionText.getText().trim(), clazz.getId());
+                newQuestionText.setText("");
+            }
         });
 
         user = MainApplication.getInstance().getLoggedUser();
@@ -92,6 +112,12 @@ public class QuestionController extends ParentController implements AnswerListen
             startDiscovery(clazz);
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopDiscovery();
     }
 
     /**
@@ -177,7 +203,7 @@ public class QuestionController extends ParentController implements AnswerListen
 
     private void startListeningAnswers(Question question) {
         try {
-            ServerHandlerFactory.createListeningHandler(question, this);
+            listeningHandler = ServerHandlerFactory.createListeningHandler(question, this);
         } catch (SoftClickerException e) {
             log.error("Cannot start listening server for question '" + question + "'");
         }

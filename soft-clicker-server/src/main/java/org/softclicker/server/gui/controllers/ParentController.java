@@ -29,10 +29,13 @@ public class ParentController {
         flow.withGlobalLink(node.getId(), controllerClass);
         node.setOnMouseClicked((e) -> {
             try {
+                onDestroy();
                 flowHandler.handle(node.getId());
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
         });
     }
+
+    protected void onDestroy(){}
 }
