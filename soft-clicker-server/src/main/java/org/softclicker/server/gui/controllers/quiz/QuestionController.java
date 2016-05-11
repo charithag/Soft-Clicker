@@ -21,9 +21,10 @@ import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.gui.controllers.ParentController;
 import org.softclicker.server.manage.AnswerManager;
+import org.softclicker.server.handler.ServerHandler;
+import org.softclicker.server.handler.ServerHandlerFactory;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * Created by chamika on 5/6/16.
  */
 @FXMLController(value = "/fxml/ui/Question.fxml", title = "Questions")
-public class QuestionController extends ParentController {
+public class QuestionController extends ParentController implements AnswerListener {
 
     private final static Logger log = LogManager.getLogger(QuestionController.class);
 
@@ -59,6 +60,7 @@ public class QuestionController extends ParentController {
 
     private Clazz clazz;
     private User user;
+    private ServerHandler broadCastingServer;
 
     @PostConstruct
     public void init() {
@@ -92,6 +94,11 @@ public class QuestionController extends ParentController {
 
     }
 
+    /**
+     * Count answers and update graph
+     *
+     * @param questionId
+     */
     private void loadAnswers(int questionId) {
         AnswerManager answerManager = MainApplication.getInstance().getAnswerManager();
         try {
@@ -157,14 +164,34 @@ public class QuestionController extends ParentController {
     }
 
     private void startDiscovery(Clazz clazz) {
-        //TODO start discovery service in a separate thread
+        try {
+            this.broadCastingServer = ServerHandlerFactory.createBroadcastingHandler();
+        } catch (SoftClickerException e) {
+            log.error("Cannot create broadcasting server", e);
+        }
     }
 
     private void stopDiscovery() {
-        //TODO stop discovery
+        this.broadCastingServer.stop();
     }
 
     private void startListeningAnswers(Question question) {
-        //TODO start listening answers
+        try {
+            ServerHandlerFactory.createListeningHandler(question, this);
+        } catch (SoftClickerException e) {
+            log.error("Cannot start listening server for question '" + question + "'");
+        }
+        log.info("Server started listening answers for question '" + question + "'");
+    }
+
+    @Override
+    public void answerReceived(Answer answer) throws SoftClickerException {
+        boolean status = MainApplication.getInstance().getAnswerManager().saveAnswer(answer);
+        if (status) {
+            loadAnswers(answer.getQuestion().getQuestionId());
+        }
+        throw new SoftClickerException("Error on saving answer with id '" + answer.getAnswerId() +
+                "' for the question id '" + answer.getQuestion().getQuestionId());
     }
 }
+

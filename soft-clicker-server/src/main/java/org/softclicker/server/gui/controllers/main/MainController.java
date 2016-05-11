@@ -16,10 +16,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import org.softclicker.server.gui.controllers.connection.DiscoveryController;
 import org.softclicker.server.gui.controllers.home.HomeController;
 import org.softclicker.server.gui.controllers.slidemenu.SideMenuController;
-import org.softclicker.server.gui.datafx.AnimatedFlowContainer;
+import org.softclicker.server.gui.datafx.AnimatedUIFlowContainer;
 
 import javax.annotation.PostConstruct;
 
@@ -94,12 +93,12 @@ public class MainController {
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
         context.register("ContentPane", content);
-        content.getChildren().add(flowHandler.start(new AnimatedFlowContainer(Duration.millis(320), ContainerAnimations.SWIPE_LEFT)));
+        content.getChildren().add(flowHandler.start(new AnimatedUIFlowContainer(Duration.millis(320), ContainerAnimations.SWIPE_LEFT)));
 
         // side controller will add links to the content flow
         Flow sideMenuFlow = new Flow(SideMenuController.class);
         sideMenuFlowHandler = sideMenuFlow.createHandler(context);
-        sideContent.getChildren().add(sideMenuFlowHandler.start(new AnimatedFlowContainer(Duration.millis(320), ContainerAnimations.SWIPE_LEFT)));
+        sideContent.getChildren().add(sideMenuFlowHandler.start(new AnimatedUIFlowContainer(Duration.millis(320), ContainerAnimations.SWIPE_LEFT)));
 
     }
 

@@ -5,7 +5,11 @@ import org.softclicker.server.dao.DAOUtil;
 import org.softclicker.server.dao.ScopingDataSource;
 import org.softclicker.server.entity.Clazz;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +31,7 @@ public class ClazzDAO extends AbstractGenericDAO<Clazz> {
     }
 
     public List<Clazz> getAllClazzes() throws SQLException {
-        String sql = "SELECT * FROM `CLASS`";
+        String sql = "SELECT * FROM `" + TABLE_NAME + "`";
         List<Clazz> clazzes = new ArrayList<>();
         try (
                 Connection conn = scopingDataSource.getConnection();
@@ -49,8 +53,8 @@ public class ClazzDAO extends AbstractGenericDAO<Clazz> {
                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ) {
             int count = 0;
-            stmt.setInt(++count,clazz.getYear());
-            stmt.setString(++count,clazz.getName());
+            stmt.setInt(++count, clazz.getYear());
+            stmt.setString(++count, clazz.getName());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             rs.next();

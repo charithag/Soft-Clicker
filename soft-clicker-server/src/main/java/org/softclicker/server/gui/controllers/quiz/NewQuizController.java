@@ -36,7 +36,7 @@ public class NewQuizController extends ParentController {
         submitButton.setOnAction(event -> {
             try {
 
-                Clazz clazz = new Clazz(classNameText.getText(), Integer.parseInt(classYearText.getText()));
+                Clazz clazz = new Clazz(-1, classNameText.getText(), Integer.parseInt(classYearText.getText()));
                 MainApplication.getInstance().getClazzManager().saveClazz(clazz);
                 context.register("class", clazz);
                 contentFlowHandler.handle(submitButton.getId());

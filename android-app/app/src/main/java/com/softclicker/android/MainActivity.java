@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private WifiConfiguration wifiConfig;
     private List<ScanResult> wifiScanList;
     private String ssid = "";
-    private boolean isAssociating = false;
+    private static volatile boolean isAssociating = false;
 
     private ProgressDialog progressDialog;
     private TextView statusLabel;
@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
             final String action = intent.getAction();
             if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                 wifiScanList = wifiManager.getScanResults();
-                String _ssid = sharedPref.getString(Constants.SSID, "");
+                String _ssid = sharedPref.getString(Constants.SSID, null);
                 for (ScanResult sr : wifiScanList) {
-                    if (_ssid.equals(sr.SSID)) {
+                    if (sr.SSID != null && sr.SSID.equals(_ssid)) {
                         unregisterReceiver(wifiScanBroadcastReceiver);
                         ssid = _ssid;
                         connectWithAP(ssid, sharedPref.getString(Constants.PASSWORD, null));
@@ -279,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         String selectedStudent = sharedPref.getString(Constants.SELECTED_STUDENT, null);
         TextView txtStudentId = (TextView) findViewById(R.id.student_id_label);
         if (txtStudentId != null) {
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
             wifiManager.setWifiEnabled(true);
             Toast.makeText(getBaseContext(), "WiFi Enabled!", Toast.LENGTH_LONG).show();
         } else if (wifiInfo != null
-                && sharedPref.getString(Constants.SSID, "").equals(wifiInfo.getSSID().replace("\"", ""))) {
+                && wifiInfo.getSSID().replace("\"", "").equals(sharedPref.getString(Constants.SSID, null))) {
             if (!sharedPref.contains(Constants.SERVER_IP)) {
                 listenToServerBroadcast();
             } else if (selectedStudent == null) {
@@ -520,14 +520,21 @@ public class MainActivity extends AppCompatActivity {
                     String message = new String(packet.getData()).trim();
                     Log.i("UDP", "Got UDB broadcast from " + senderIP + ", message: " + message);
 
-                    SoftClickBroadcast softClickBroadcast = messageHandler.decodeBroadcast(packet.getData());
+                    final SoftClickBroadcast softClickBroadcast = messageHandler.decodeBroadcast(packet.getData());
+                    socket.close();
+
                     SharedPreferences.Editor prefEditor = sharedPref.edit();
                     prefEditor.putString(Constants.SERVER_IP, softClickBroadcast.getServerIP().getHostAddress());
                     prefEditor.putString(Constants.SERVER_NAME, softClickBroadcast.getServerName());
                     prefEditor.putInt(Constants.SERVER_PORT, softClickBroadcast.getPort());
                     prefEditor.apply();
 
-                    socket.close();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Connected with : " + softClickBroadcast.getServerName(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } catch (Exception e) {
                     mHandler.post(new Runnable() {
                         @Override

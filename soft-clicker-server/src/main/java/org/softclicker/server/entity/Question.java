@@ -22,8 +22,8 @@ public class Question {
         this.question = question;
         this.answer = answer;
         this.owner = owner;
-        this.createdTime = createdTime;
-        this.expireTime = expireTime;
+        this.createdTime = (Date)createdTime.clone();
+        this.expireTime = (Date)expireTime.clone();
         this.classID = classID;
     }
 
@@ -44,11 +44,11 @@ public class Question {
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return (Date)createdTime.clone();
     }
 
     public Date getExpireTime() {
-        return expireTime;
+        return (Date)expireTime.clone();
     }
 
     public int getClassID() {

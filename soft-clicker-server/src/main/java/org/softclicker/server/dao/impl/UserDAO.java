@@ -27,8 +27,8 @@ public class UserDAO extends AbstractGenericDAO<User> {
         return 0;
     }
 
-    public List<User> getAllUsers() throws SQLException{
-        String sql = "SELECT * FROM `USER`";
+    public List<User> getAllUsers() throws SQLException {
+        String sql = "SELECT * FROM `" + TABLE_NAME + "`";
         List<User> users = new ArrayList<>();
         try (
                 Connection conn = scopingDataSource.getConnection();
@@ -43,8 +43,8 @@ public class UserDAO extends AbstractGenericDAO<User> {
         }
     }
 
-    public User getUserById(int userId) throws SQLException{
-        String sql = "SELECT * FROM `USER` WHERE USER_ID=?";
+    public User getUserById(int userId) throws SQLException {
+        String sql = "SELECT * FROM `" + TABLE_NAME + "` WHERE USER_ID=?";
         try (
                 Connection conn = scopingDataSource.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);

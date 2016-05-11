@@ -19,7 +19,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
-        this.password = password;
+        this.password = password.clone();
         this.roles = roles;
     }
 
@@ -44,7 +44,8 @@ public class User {
     }
 
     public char[] getPassword() {
-        return password;
+        //returning new instance, for avoid exposing internal reference
+        return password.clone();
     }
 
     public List<Role> getRoles() {

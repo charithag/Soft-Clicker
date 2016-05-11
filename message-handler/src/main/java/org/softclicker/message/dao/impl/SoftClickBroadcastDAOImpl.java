@@ -1,5 +1,6 @@
 package org.softclicker.message.dao.impl;
 
+import org.softclicker.message.dao.MessageUtil;
 import org.softclicker.message.dao.SoftClickBroadcastDAO;
 import org.softclicker.message.dto.SoftClickBroadcast;
 
@@ -45,7 +46,10 @@ public class SoftClickBroadcastDAOImpl implements SoftClickBroadcastDAO {
         return message;
     }
 
-    public SoftClickBroadcast decodeMessage(byte[] message) throws UnknownHostException {
+    public SoftClickBroadcast decodeMessage(byte[] received) throws UnknownHostException {
+
+        byte[] message = MessageUtil.getMessageFromBytes(received);
+
         SoftClickBroadcast softClickBroadcast = new SoftClickBroadcast();
 
         int index = 0;
