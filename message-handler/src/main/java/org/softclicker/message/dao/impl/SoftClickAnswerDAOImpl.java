@@ -34,7 +34,9 @@ public class SoftClickAnswerDAOImpl implements SoftClickAnswerDAO {
 
     public SoftClickAnswer decodeMessage(byte[] received) {
 
-        byte[] message = MessageUtil.getMessageFromBytes(received);
+        // No need to remove extra bytes
+//        byte[] message = MessageUtil.getMessageFromBytes(received);
+        byte[] message = received;
 
         SoftClickAnswer softClickAnswer = new SoftClickAnswer();
 

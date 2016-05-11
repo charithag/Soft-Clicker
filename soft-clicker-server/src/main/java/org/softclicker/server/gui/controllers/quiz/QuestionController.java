@@ -165,7 +165,7 @@ public class QuestionController extends ParentController implements AnswerListen
 
     private void startDiscovery(Clazz clazz) {
         try {
-            this.broadCastingServer = ServerHandlerFactory.createBroadcastingHandler();
+            this.broadCastingServer = ServerHandlerFactory.createBroadcastingHandler(clazz.getName());
         } catch (SoftClickerException e) {
             log.error("Cannot create broadcasting server", e);
         }
@@ -188,7 +188,8 @@ public class QuestionController extends ParentController implements AnswerListen
     public void answerReceived(Answer answer) throws SoftClickerException {
         boolean status = MainApplication.getInstance().getAnswerManager().saveAnswer(answer);
         if (status) {
-            loadAnswers(answer.getQuestion().getQuestionId());
+            Platform.runLater(() -> loadAnswers(answer.getQuestion().getQuestionId()) );
+
         }
         throw new SoftClickerException("Error on saving answer with id '" + answer.getAnswerId() +
                 "' for the question id '" + answer.getQuestion().getQuestionId());

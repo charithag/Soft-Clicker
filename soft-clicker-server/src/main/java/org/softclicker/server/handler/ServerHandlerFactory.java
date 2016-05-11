@@ -23,9 +23,9 @@ public class ServerHandlerFactory {
     /**
      * Starts a UDP Server thread and broadcasting server details for TCP connections.
      */
-    public static ServerHandler createBroadcastingHandler() throws SoftClickerException {
+    public static ServerHandler createBroadcastingHandler(String serverName) throws SoftClickerException {
         SoftClickBroadcast broadcastMsg = new SoftClickBroadcast();
-        broadcastMsg.setServerName("SoftClicker_100");
+        broadcastMsg.setServerName(serverName);
         broadcastMsg.setServerIP(HandlerUtils.getLocalHost().getAddress());
         broadcastMsg.setPort(HandlerUtils.TCP_SERVER_PORT_NUM);
 

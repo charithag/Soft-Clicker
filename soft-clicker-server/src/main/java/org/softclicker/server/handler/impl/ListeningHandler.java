@@ -1,6 +1,9 @@
 package org.softclicker.server.handler.impl;
 
 import org.apache.log4j.Logger;
+import org.softclicker.message.dao.impl.SoftClickAnswerDAOImpl;
+import org.softclicker.message.dao.impl.SoftClickBroadcastDAOImpl;
+import org.softclicker.message.dto.SoftClickAnswer;
 import org.softclicker.server.entity.Answer;
 import org.softclicker.server.entity.Question;
 import org.softclicker.server.entity.User;
@@ -9,6 +12,7 @@ import org.softclicker.server.exception.SoftClickerRuntimeException;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.controllers.quiz.AnswerListener;
 import org.softclicker.server.handler.ServerHandler;
+import org.softclicker.transport.handler.MessageHandler;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -44,13 +48,17 @@ public class ListeningHandler implements ServerHandler {
                         String answerText = null;
                         try {
                             answerText = receivedMsg.readLine();
+                            log.info("received text" + answerText);
                         } catch (IOException e) {
                             log.error("Cannot read answer text.", e);
                         }
                         //construct response
                         byte[] response = "Invalid Response".getBytes();
                         if (answerText != null) {
-                            response = processMessage(answerListener, listeningQuestion, answerText);
+                            MessageHandler messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(),
+                                    new SoftClickAnswerDAOImpl());
+                            SoftClickAnswer softClickAnswer = messageHandler.decodeAnswer(answerText.getBytes());
+                            response = processMessage(answerListener, listeningQuestion, Answer.ANSWERS.values()[softClickAnswer.getAnswerOption().ordinal()].toString());
                         }
                         //send response
                         try {
