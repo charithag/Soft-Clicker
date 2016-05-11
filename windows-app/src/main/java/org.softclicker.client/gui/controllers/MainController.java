@@ -12,6 +12,8 @@ import io.datafx.controller.util.VetoException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -60,6 +62,9 @@ public class MainController {
                     DefaultFlowContainer container = new DefaultFlowContainer();
                     context = new ViewFlowContext();
                     context.register("Stage", stage);
+
+                    //registering student id for answer pane
+                    context.register("sid", idInputText.getText());
                     flow.createHandler(context).start(container);
 
                     Scene scene = new Scene( new JFXDecorator( stage , container.getView() ), 800, 600);
