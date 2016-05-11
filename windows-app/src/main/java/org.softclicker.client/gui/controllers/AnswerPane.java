@@ -106,6 +106,7 @@ public class AnswerPane {
                     scene.getStylesheets().add(getClass().getResource("/css/jfoenix-design.css").toExternalForm());
                     scene.getStylesheets().add(getClass().getResource("/css/jfoenix-main-demo.css").toExternalForm());
                     stage.setScene( scene );
+
                     stage.show();
 
                 } catch (Exception e1) {
