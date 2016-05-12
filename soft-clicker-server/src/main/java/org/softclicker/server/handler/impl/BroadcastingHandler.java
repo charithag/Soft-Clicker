@@ -16,6 +16,7 @@ public class BroadcastingHandler implements ServerHandler {
 
     private final static org.apache.log4j.Logger log = LogManager.getLogger(BroadcastingHandler.class);
     private volatile Thread serverThread;
+    private boolean stopped = false;
 
     public BroadcastingHandler(int port, SoftClickBroadcast broadcastMsg) throws SoftClickerException {
         MulticastSocket socket;
@@ -31,7 +32,7 @@ public class BroadcastingHandler implements ServerHandler {
         this.serverThread = new Thread() {
             @Override
             public void run() {
-                while (true) {
+                while (!stopped) {
                     try {
                         MessageHandler messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(),
                                 new SoftClickAnswerDAOImpl());
@@ -57,7 +58,9 @@ public class BroadcastingHandler implements ServerHandler {
 
     @Override
     public void stop() {
-        this.serverThread.interrupt();
+        if (serverThread != null) {
+            stopped = true;
+        }
         this.serverThread = null;
     }
 

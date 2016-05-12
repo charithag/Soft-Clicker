@@ -39,7 +39,7 @@ public class ListeningHandler implements ServerHandler {
         this.serverThread = new Thread() {
             @Override
             public void run() {
-                while (true && !stopped) {
+                while (!stopped) {
                     try (
                             Socket connectionSocket = serverSocket.accept();
                             BufferedReader receivedMsg = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream(), StandardCharsets.UTF_8));

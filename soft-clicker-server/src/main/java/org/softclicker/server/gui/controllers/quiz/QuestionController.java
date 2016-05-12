@@ -87,9 +87,7 @@ public class QuestionController extends ParentController implements AnswerListen
             if (questionsByClass != null && questionsByClass.size() > selectedIndex) {
                 Question question = questionsByClass.get(selectedIndex);
                 loadAnswers(question.getQuestionId());
-                if(listeningHandler != null){
-                    listeningHandler.stop();
-                }
+                stopListeningAnswers();
                 startListeningAnswers(question);
             }
         });
@@ -114,10 +112,10 @@ public class QuestionController extends ParentController implements AnswerListen
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopDiscovery();
+    private void stopListeningAnswers() {
+        if(listeningHandler != null){
+            listeningHandler.stop();
+        }
     }
 
     /**
@@ -197,8 +195,9 @@ public class QuestionController extends ParentController implements AnswerListen
         }
     }
 
-    private void stopDiscovery() {
+    public void stopNetworks() {
         this.broadCastingServer.stop();
+        stopListeningAnswers();
     }
 
     private void startListeningAnswers(Question question) {

@@ -63,7 +63,7 @@ public class HistoryController extends ParentController{
 
         questionsList.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             int selectedIndex = newValue.intValue();
-            if (questionsByClass.size() > selectedIndex) {
+            if (questionsByClass != null && questionsByClass.size() > selectedIndex) {
                 loadAnswers(questionsByClass.get(selectedIndex).getQuestionId());
             }
         });

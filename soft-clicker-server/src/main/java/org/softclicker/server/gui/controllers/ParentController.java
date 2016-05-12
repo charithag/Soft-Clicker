@@ -5,6 +5,7 @@ import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.scene.Node;
+import org.softclicker.server.gui.controllers.quiz.QuestionController;
 
 import javax.annotation.PostConstruct;
 
@@ -20,7 +21,7 @@ public class ParentController {
     protected Flow contentFlow;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         contentFlowHandler = (FlowHandler) context.getRegisteredObject("ContentFlowHandler");
         contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
     }
@@ -29,7 +30,7 @@ public class ParentController {
         flow.withGlobalLink(node.getId(), controllerClass);
         node.setOnMouseClicked((e) -> {
             try {
-                onDestroy();
+                onDestroy(flowHandler);
                 flowHandler.handle(node.getId());
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -37,5 +38,14 @@ public class ParentController {
         });
     }
 
-    protected void onDestroy(){}
+    protected void onDestroy(FlowHandler flowHandler) {
+        try {
+            Object controller = flowHandler.getCurrentView().getViewContext().getController();
+            if (controller instanceof QuestionController) {
+                ((QuestionController) controller).stopNetworks();
+            }
+        } catch (NullPointerException e) {
+            //skip
+        }
+    }
 }
