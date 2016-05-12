@@ -11,7 +11,7 @@
             <Font size="22.0" />
          </font>
       </JFXButton>
-      <JFXButton buttonType="RAISED" layoutX="238.0" layoutY="130.0" prefHeight="125.0" prefWidth="125.0" style="-fx-background-color: #5fa3c1;" text="New &#10;Question" textAlignment="CENTER" textFill="WHITE">
+      <JFXButton fx:id="quickQuizButton" buttonType="RAISED" layoutX="238.0" layoutY="130.0" prefHeight="125.0" prefWidth="125.0" style="-fx-background-color: #5fa3c1;" text="Quick&#10;Quiz" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="22.0" />
          </font>
