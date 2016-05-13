@@ -22,12 +22,11 @@ import org.softclicker.server.exception.SoftClickerException;
 import org.softclicker.server.gui.MainApplication;
 import org.softclicker.server.gui.components.AnswerChart;
 import org.softclicker.server.gui.controllers.ParentController;
-import org.softclicker.server.manage.AnswerManager;
 import org.softclicker.server.handler.ServerHandler;
 import org.softclicker.server.handler.ServerHandlerFactory;
+import org.softclicker.server.manage.AnswerManager;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,27 +39,19 @@ import java.util.stream.Collectors;
 public class QuestionController extends ParentController implements AnswerListener {
 
     private final static Logger log = LogManager.getLogger(QuestionController.class);
-
-    @FXML private StackPane root;
-
-    @FXML
-    private Pane chartPane;
-
-    @FXML
-    private JFXListView questionsList;
-
-    @FXML
-    private Label classNameLabel;
-
-    @FXML
-    private JFXButton newQuestionButton;
-
     @FXML
     TextField newQuestionText;
-
     @FXML
     JFXSnackbar snackbar;
-
+    @FXML private StackPane root;
+    @FXML
+    private Pane chartPane;
+    @FXML
+    private JFXListView questionsList;
+    @FXML
+    private Label classNameLabel;
+    @FXML
+    private JFXButton newQuestionButton;
     private AnswerChart chart;
 
     private List<Clazz> validClasses;
@@ -214,10 +205,10 @@ public class QuestionController extends ParentController implements AnswerListen
         boolean status = MainApplication.getInstance().getAnswerManager().saveAnswer(answer);
         if (status) {
             Platform.runLater(() -> loadAnswers(answer.getQuestion().getQuestionId()) );
-
+        } else {
+            throw new SoftClickerException("Error on saving answer with id '" + answer.getAnswerId() +
+                                           "' for the question id '" + answer.getQuestion().getQuestionId());
         }
-        throw new SoftClickerException("Error on saving answer with id '" + answer.getAnswerId() +
-                "' for the question id '" + answer.getQuestion().getQuestionId());
     }
 }
 
