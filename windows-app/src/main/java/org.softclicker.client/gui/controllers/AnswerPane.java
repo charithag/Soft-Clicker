@@ -79,8 +79,8 @@ public class AnswerPane {
     public void init() throws FlowException, VetoException {
 
         Stage stage = MainWindow.primaryStage;
-        String sid = (String)context.getRegisteredObject("sid");
-        idoOutputLable.setText(sid);
+        studentId = (String)context.getRegisteredObject("sid");
+        idoOutputLable.setText(studentId);
         final ToggleGroup group = new ToggleGroup();
         radioButton1.setToggleGroup(group);
         radioButton2.setToggleGroup(group);
@@ -133,6 +133,8 @@ public class AnswerPane {
                 TransportManager manager = TransportManager.getInstance();
                 if (studentId == null) {
                     studentId = "Anonymus";
+                    manager.sendAnswers(studentId, answerOption);
+                }else{
                     manager.sendAnswers(studentId, answerOption);
                 }
             }
