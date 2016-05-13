@@ -89,11 +89,11 @@
         android:layout_weight="0.99" />
 
     <TextView
-        android:id="@+id/class_status_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/txt_status"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:id="@+id/class_status_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/txt_status"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 </LinearLayout>

@@ -14,7 +14,7 @@
     <string name="txt_option_4">Answer 4</string>
     <string name="txt_option_5">Answer 5</string>
     <string name="txt_submit">Submit</string>
-    <string name="txt_status">status</string>
+    <string name="txt_status">Please connect with Soft-Clicker AP</string>
     <string name="enter_student_id">Enter Student ID</string>
     <string name="add_student">Add Student</string>
 </resources>
