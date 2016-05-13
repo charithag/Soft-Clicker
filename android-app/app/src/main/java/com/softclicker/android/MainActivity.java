@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -20,6 +19,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,19 +47,16 @@ import org.softclicker.message.dto.SoftClickAnswer;
 import org.softclicker.message.dto.SoftClickBroadcast;
 import org.softclicker.transport.handler.MessageHandler;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by User on 3/18/2016.
- */
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 0;
@@ -68,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     private WifiConfiguration wifiConfig;
     private List<ScanResult> wifiScanList;
-    private String ssid = "";
+    private String ssid;
     private static volatile boolean isAssociating = false;
 
     private ProgressDialog progressDialog;
@@ -118,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             final String action = intent.getAction();
             if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if (info != null && info.isConnected() && ssid.equals(wifiManager.getConnectionInfo().getSSID().replace("\"", ""))) {
+                if (info != null && info.isConnected() && wifiManager.getConnectionInfo().getSSID().replace("\"", "").equals(ssid)) {
                     unregisterReceiver(wifiConnectionReceiver);
                     SharedPreferences.Editor prefEditor = sharedPref.edit();
                     prefEditor.putString(Constants.SSID, ssid);
@@ -188,9 +185,10 @@ public class MainActivity extends AppCompatActivity {
                             String serverIP = sharedPref.getString(Constants.SERVER_IP, "");
                             int port = sharedPref.getInt(Constants.SERVER_PORT, 0);
                             Socket clientSocket = new Socket(serverIP, port);
-                            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-                            outToServer.write(messageHandler.encodeAnswer(softClickAnswer));
-                            int response = clientSocket.getInputStream().read();
+                            DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                            DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
+                            dataOutputStream.write(messageHandler.encodeAnswer(softClickAnswer));
+                            int response = dataInputStream.read();
                             if (response == 0x06) {
                                 mHandler.post(new Runnable() {
                                     @Override
@@ -288,19 +286,22 @@ public class MainActivity extends AppCompatActivity {
             if (selectedStudent != null) {
                 txtStudentId.setText(selectedStudent);
             } else {
-                txtStudentId.setText("Please add student first");
+                txtStudentId.setText("Please add a student first");
             }
         }
 
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        ssid = sharedPref.getString(Constants.SSID, null);
         if (!wifiManager.isWifiEnabled()) {
             progressDialog = ProgressDialog.show(this, "Connecting",
                     "Searching for WiFi Access Points.", true);
             wifiManager.setWifiEnabled(true);
             Toast.makeText(getBaseContext(), "WiFi Enabled!", Toast.LENGTH_LONG).show();
         } else if (wifiInfo != null
-                && wifiInfo.getSSID().replace("\"", "").equals(sharedPref.getString(Constants.SSID, null))) {
+                && wifiInfo.getSSID().replace("\"", "").equals(ssid)) {
+            statusLabel.setText("Your are connected to " + sharedPref.getString(Constants.SERVER_NAME, "") + " @ " + ssid);
             if (!sharedPref.contains(Constants.SERVER_IP)) {
+                statusLabel.setText("Your are connected to " + ssid);
                 listenToServerBroadcast();
             } else if (selectedStudent == null) {
                 selectStudent();
@@ -311,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startWiFiScan();
@@ -507,13 +508,13 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    byte[] recvBuf = new byte[15000];
+                    byte[] receivedBuf = new byte[15000];
                     if (socket == null || socket.isClosed()) {
                         socket = new MulticastSocket(Constants.BORADCAST_PORT);
                         socket.setBroadcast(true);
                     }
                     socket.setSoTimeout(10000);
-                    DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
+                    DatagramPacket packet = new DatagramPacket(receivedBuf, receivedBuf.length);
                     Log.i("UDP", "Waiting for UDP broadcast");
                     socket.receive(packet);
 
@@ -534,6 +535,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Toast.makeText(MainActivity.this, "Connected with : " + softClickBroadcast.getServerName(), Toast.LENGTH_LONG).show();
+                            statusLabel.setText("Your are connected to " + softClickBroadcast.getServerName() + "@" + sharedPref.getString(Constants.SSID, ""));
                         }
                     });
                 } catch (Exception e) {
@@ -556,17 +558,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
-    }
-
-    private InetAddress getBroadcastAddress() throws IOException {
-        DhcpInfo dhcp = wifiManager.getDhcpInfo();
-        // handle null somehow
-
-        int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
-        byte[] quads = new byte[4];
-        for (int k = 0; k < 4; k++)
-            quads[k] = (byte) (broadcast >> (k * 8));
-        return InetAddress.getByAddress(quads);
     }
 
 }

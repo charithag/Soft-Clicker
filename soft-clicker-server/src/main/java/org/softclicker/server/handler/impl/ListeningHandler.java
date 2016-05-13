@@ -14,20 +14,18 @@ import org.softclicker.server.gui.controllers.quiz.AnswerListener;
 import org.softclicker.server.handler.ServerHandler;
 import org.softclicker.transport.handler.MessageHandler;
 
-import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class ListeningHandler implements ServerHandler {
 
-    private volatile Thread serverThread;
     private static final Logger log = Logger.getLogger(ListeningHandler.class);
-    ServerSocket serverSocket;
+    private volatile Thread serverThread;
+    private ServerSocket serverSocket;
     private boolean stopped = false;
     public ListeningHandler(int port, Question listeningQuestion, AnswerListener answerListener) throws SoftClickerException {
 
@@ -42,31 +40,30 @@ public class ListeningHandler implements ServerHandler {
                 while (!stopped) {
                     try (
                             Socket connectionSocket = serverSocket.accept();
-                            BufferedReader receivedMsg = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream(), StandardCharsets.UTF_8));
-                            DataOutputStream sendingMsg = new DataOutputStream(connectionSocket.getOutputStream());
+                            DataInputStream inputStream = new DataInputStream(connectionSocket.getInputStream());
+                            DataOutputStream responseStream = new DataOutputStream(connectionSocket.getOutputStream())
                     ) {
-                        //read message
-                        String answerText = null;
-                        try {
-                            answerText = receivedMsg.readLine();
-                            log.info("received text" + answerText);
-                        } catch (IOException e) {
-                            log.error("Cannot read answer text.", e);
-                        }
                         //construct response
-                        byte[] response = "Invalid Response".getBytes();
-                        if (answerText != null) {
-                            MessageHandler messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(),
-                                    new SoftClickAnswerDAOImpl());
-                            SoftClickAnswer softClickAnswer = messageHandler.decodeAnswer(answerText.getBytes());
+                        MessageHandler messageHandler = new MessageHandler(new SoftClickBroadcastDAOImpl(),
+                                                                           new SoftClickAnswerDAOImpl());
+                        byte[] response = new byte[]{0x15};
+                        try {
+                            byte[] receivedBuf = new byte[15000];
+                            int length = inputStream.read(receivedBuf);
+                            log.info("Received answer message with length " + length);
+                            SoftClickAnswer softClickAnswer = messageHandler.decodeAnswer(receivedBuf);
                             response = processMessage(answerListener, listeningQuestion, Answer.ANSWERS.values()[softClickAnswer.getAnswerOption().ordinal()].toString());
+                        } catch (IOException e) {
+                            log.error("Cannot read answer from bytes.", e);
                         }
+
                         //send response
                         try {
-                            sendingMsg.write(response, 0, response.length);
+                            responseStream.write(response, 0, response.length);
                         } catch (IOException e) {
                             log.error("Cannot send response.", e);
                         }
+                        connectionSocket.close();
                     } catch (IOException e) {
                         if(!stopped)
                         throw new SoftClickerRuntimeException("Cannot create socket.", e);
@@ -82,9 +79,9 @@ public class ListeningHandler implements ServerHandler {
         try {
             //answer received, trigger the callback
             answerListener.answerReceived(answer);
-            return "Answer saved".getBytes();
+            return new byte[]{0x06};
         } catch (SoftClickerException e) {
-            return "Answer saving failed".getBytes();
+            return new byte[]{0x15};
         }
     }
 
