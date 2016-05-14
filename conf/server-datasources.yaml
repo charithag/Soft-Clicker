@@ -1,0 +1,11 @@
+SoftClickerDB:
+    description: The primary datasource used for soft clicker
+    url: jdbc:h2:~/SOFTCLICKER_DB;DB_CLOSE_ON_EXIT=FALSE
+    username: softclicker
+    password: softclicker
+    driverClassName: org.h2.Driver
+    maxActive: 50
+    maxWait: 60000
+    testOnBorrow: true
+    validationQuery: SELECT 1
+    validationInterval: 30000
